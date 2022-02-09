@@ -12,7 +12,7 @@
           </q-avatar>
         <q-toolbar-title>
           
-          <span class="q-mt-xl" style="font-size: 200%" >
+          <span class="q-mt-xl" style="font-size: 30px" >
           TILTE DO LIST</span>
         </q-toolbar-title>
       </q-toolbar>
