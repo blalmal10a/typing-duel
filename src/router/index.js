@@ -56,8 +56,7 @@ export default route(function (/* { store, ssrContext } */) {
     console.log(isLogin)
     if (auth && !isLogin) {
 
-      next()
-      // next('/')
+      next('/')
 
     } else {
       next()
