@@ -32,6 +32,9 @@
 </template>
 
 <script>
+import { getAuth, sendPasswordResetEmail  } from 'firebase/auth'
+const auth = getAuth()
+
 export default {
   name: "ForgotPassword",
   data () {
@@ -43,7 +46,8 @@ export default {
   },
   methods: {
     resetPassword () {
-      firebase.auth().sendPasswordResetEmail(this.form.email)
+      console.log(this.form)
+      sendPasswordResetEmail(auth,this.form.email)
         .then(() => {
           this.form = {}
           this.$q.notify({ message: 'Check you email and reset your password.' })
