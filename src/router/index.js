@@ -6,6 +6,10 @@ import {
   createWebHashHistory,
 } from "vue-router";
 import routes from "./routes";
+import '../boot/firebase'
+
+import { getAuth } from "firebase/auth";
+const loginuser = getAuth().currentUser
 
 /*
  * If not building with SSR mode, you can
@@ -37,8 +41,10 @@ export default route(function (/* { store, ssrContext } */) {
   
   Router.beforeEach(async (to, from, next) => {
     const auth = to.meta.requiresAuth
-    if (auth &&  firebase.getCurrentUser()) {
+    if (auth && !loginuser) {
       next('/');
+      console.log('hehe')
+
     } else {
       next();
     }
