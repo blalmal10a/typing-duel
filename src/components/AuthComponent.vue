@@ -78,7 +78,7 @@ export default {
       }
     },
     google () {
-      console.log('google login & signup')
+      this.$q.notify('not available yet :(')
     },
     signInExistingUser (email, password) {
       signInWithEmailAndPassword(auth, email, password)
@@ -95,7 +95,8 @@ export default {
           this.$router.push('/home')
         })
         .catch(error => {
-          console.log(error)
+          this.$q.notify(error.response.message)
+          console.log(error.response.message)
         })
     },
     forgotPassword () {

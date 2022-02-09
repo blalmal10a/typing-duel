@@ -8,9 +8,20 @@ import {
 import routes from "./routes";
 import '../boot/firebase'
 
-import { getAuth } from "firebase/auth";
-const loginuser = getAuth().currentUser
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+// const auth = getAuth()
 
+// console.log(auth)
+// onAuthStateChanged((auth), (user) => {
+//   if (auth) {
+//     // console.log(user.email)
+
+//   } else {
+//     console.log('user name is null')
+//   }
+// })
+
+// console.log(change)
 /*
  * If not building with SSR mode, you can
  * directly export the Router instantiation;
@@ -41,12 +52,15 @@ export default route(function (/* { store, ssrContext } */) {
   
   Router.beforeEach(async (to, from, next) => {
     const auth = to.meta.requiresAuth
-    if (auth && !loginuser) {
-      next('/');
-      console.log('hehe')
+    const isLogin = getAuth().currentUser
+    console.log(isLogin)
+    if (auth && !isLogin) {
+
+      next()
+      // next('/')
 
     } else {
-      next();
+      next()
     }
   })
 
