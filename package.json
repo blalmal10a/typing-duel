@@ -11,10 +11,12 @@
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
+    "@google-cloud/firestore": "^5.0.2",
     "@quasar/extras": "^1.0.0",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
-    "firebase": "^9.6.6",
+    "firebase": "^9.4.1",
+    "mongodb": "^4.3.1",
     "quasar": "^2.0.0",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0"

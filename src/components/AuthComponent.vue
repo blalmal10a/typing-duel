@@ -53,14 +53,16 @@
 </template>
 
 <script>
-import { getAuth, signInWithEmailAndPassword , createUserWithEmailAndPassword } from 'firebase/auth'
+import { getAuth, setPersistence, signInWithEmailAndPassword, browserSessionPersistence, createUserWithEmailAndPassword, inMemoryPersistence } from 'firebase/auth'
 import ForgotPassword from "./ForgotPassword.vue";
 const auth = getAuth()
+// console.log(auth)
 export default {
   name: "AuthComponent",
   props: ['tab'],
   components: { ForgotPassword },
   data () {
+
     return {
       formData: {
         email: '',
@@ -78,16 +80,42 @@ export default {
       }
     },
     google () {
+      console.log('hehe')
+      console.log(auth)
       this.$q.notify('not available yet :(')
     },
+
     signInExistingUser (email, password) {
-      signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          this.$q.notify({ message: 'Sign In Success.' })
-          this.$router.push('/home')
+
+      console.log(auth)
+      setPersistence(auth, browserSessionPersistence, inMemoryPersistence)
+        .then(() => {
+          // Existing and future Auth states are now persisted in the current
+          // session only. Closing the window would clear any existing state even
+          // if a user forgets to sign out.
+          // ...
+          // New sign-in will be persisted with session persistence.
+          return signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+              console.log(userCredential)
+              this.$q.notify({ message: 'Sign In Success.' })
+              this.$router.push('/home')
+              localStorage.setItem('firebase:authUser:AIzaSyDWp4tt9FgtwxHQ9Fr7VyH7IRzsG9eLN8k:[DEFAULT]', 'state')
+            })
+
         })
-        .catch(error => { console.log(error) })
+        .catch(error => {
+          console.log(error)
+          this.$q.notify({
+            color: 'red',
+            message: error.message
+          })
+
+        })
+
     },
+
+
     createUser (email, password) {
       createUserWithEmailAndPassword(auth, email, password)
         .then(auth => {

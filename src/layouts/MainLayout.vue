@@ -11,9 +11,9 @@
             />
           </q-avatar>
         <q-toolbar-title>
-          
+
           <span class="q-mt-xl" style="font-size: 30px" >
-          TILTE DO LIST</span>
+          TILTE TYPING</span>
         </q-toolbar-title>
       </q-toolbar>
     </q-header>

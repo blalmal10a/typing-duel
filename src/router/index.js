@@ -9,12 +9,15 @@ import routes from "./routes";
 import '../boot/firebase'
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-// const auth = getAuth()
+const auth = getAuth()
+var isLogin = null
 
-// console.log(auth)
 // onAuthStateChanged((auth), (user) => {
 //   if (auth) {
-//     // console.log(user.email)
+
+//     isLogin = user.uid
+//     console.log('auth state ganged', isLogin)
+
 
 //   } else {
 //     console.log('user name is null')
@@ -49,14 +52,23 @@ export default route(function (/* { store, ssrContext } */) {
       process.env.MODE === "ssr" ? void 0 : process.env.VUE_ROUTER_BASE
     ),
   });
-  
+
+  onAuthStateChanged((auth), (user) => {
+    if (auth) {
+      isLogin = user.uid
+
+    } else {
+      console.log('user name is null')
+    }
+  })
+
   Router.beforeEach(async (to, from, next) => {
     const auth = to.meta.requiresAuth
-    const isLogin = getAuth().currentUser
-    console.log(isLogin)
+    // const isLogin = getAuth().currentUser
     if (auth && !isLogin) {
 
-      next('/')
+      // next('/login')
+      next()
 
     } else {
       next()
