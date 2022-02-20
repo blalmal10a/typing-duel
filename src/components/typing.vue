@@ -108,7 +108,7 @@
 import axios from "axios";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { confirmPasswordReset } from "@firebase/auth";
+import { onMounted } from "vue";
 
 var el;
 export default {
@@ -124,8 +124,81 @@ export default {
     const text = ref(null);
     const entered = ref([]);
     const characters = ref(0);
-    const url =
-      "https://tilte-do-list-default-rtdb.asia-southeast1.firebasedatabase.app/grouse.json";
+    const SERVER_URL = ref(
+      "https://tilte-do-list-default-rtdb.asia-southeast1.firebasedatabase.app/grouse.json"
+    );
+    const words = ref([
+      "code",
+      "alcohol",
+      "control",
+      "chip",
+      "nomination",
+      "kidnap",
+      "vacuum",
+      "holiday",
+      "cheque",
+      "context",
+      "nationalist",
+      "offer",
+      "herb",
+      "layout",
+      "climb",
+      "harbor",
+      "consider",
+      "ambiguity",
+      "gossip",
+      "inside",
+      "veil",
+      "wrist",
+      "turn",
+      "guerrilla",
+      "marketing",
+      "biology",
+      "topple",
+      "population",
+      "operation",
+      "tin",
+      "joke",
+      "pioneer",
+      "sum",
+      "standard",
+      "hate",
+      "tie",
+      "seal",
+      "summer",
+      "suffering",
+      "franchise",
+      "likely",
+      "blow",
+      "arrest",
+      "spring",
+      "default",
+      "thaw",
+      "gap",
+      "brick",
+      "reinforce",
+      "inspire",
+    ]);
+
+    shuffle(words.value);
+    function shuffle(array) {
+      let currentIndex = array.length,
+        randomIndex;
+
+      // While there remain elements to shuffle...
+      while (currentIndex != 0) {
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        // And swap it with the current element.
+        [array[currentIndex], array[randomIndex]] = [
+          array[randomIndex],
+          array[currentIndex],
+        ];
+      }
+      // return array;
+    }
 
     return {
       time,
@@ -146,7 +219,6 @@ export default {
         this.manager();
         this.time = 0;
         this.mywatch = setInterval(() => {
-          console.log(this.time);
           this.time++;
         }, 1000);
       } else {
@@ -154,9 +226,8 @@ export default {
       }
     },
     restart(e) {
-      this.shuffle(this.words)
-      if (!this.shown) return;
-      this.opendialog = false;
+      this.shuffle(this.words);
+
       this.disableflag = false;
       // const el = document.getElementById('typinginput')
 
@@ -166,41 +237,55 @@ export default {
           this.$refs.typinginput.focus();
         }, 500);
       });
-      console.log("element", el);
       e.preventDefault();
-      console.log("restart");
       this.ind = 0;
       this.entered = [];
       clearInterval(this.mywatch);
       clearInterval(this.mymanager);
       this.time = -1;
-      this.wpm = 0;
       this.characters = 0;
       this.text = null;
       // router.go();
+
+      if (this.shown) this.opendialog = false;
+      else return;
+      this.wpm = 0;
     },
     manager() {
       this.mymanager = setInterval(() => {
         if (this.time == 15) {
-          console.log("ended");
-          stopper();
+          this.stopper();
           this.opendialog = true;
         } else {
           this.wpm = parseInt((this.characters * 60) / (4 * this.time));
           if (this.newinput) {
-            console.log("upload");
-
             try {
-              axios.put(
-                this.url,
-                JSON.stringify({
-                  name: "grouse",
-                  wpm: this.wpm,
-                })
+              fetch(
+                "https://tilte-do-list-default-rtdb.asia-southeast1.firebasedatabase.app/grouse.json",
+                {
+                  method: "PUT",
+                  mode: "cors",
+                  cache: "no-cache",
+                  body: JSON.stringify({
+                    name: "grouse",
+                    wpm: this.wpm,
+                  }),
+                }
               );
             } catch (error) {
               console.log(error);
             }
+            // try {
+            //   axios.put(
+            //     this.url,
+            //     JSON.stringify({
+            //       name: "grouse",
+            //       wpm: this.wpm,
+            //     })
+            //   );
+            // } catch (error) {
+            //   console.log(error);
+            // }
             this.newinput = false;
           }
         }
@@ -212,18 +297,34 @@ export default {
       if (!this.text) return;
       this.entered.push(this.text);
       this.text = null;
-      if (words[this.ind] == this.entered[this.ind]) {
-        this.characters += words[this.ind].length;
+      if (this.words[this.ind] == this.entered[this.ind]) {
+        this.characters += this.words[this.ind].length;
         if (this.time < 1) this.time = 1;
       }
       this.ind++;
-      if (!words[this.ind] || this.time == 15) {
-        console.log("done");
+      if (!this.words[this.ind] || this.time == 15) {
         this.stopper();
         this.opendialog = true;
         setTimeout(() => {
           this.shown = true;
-        }, 1500);
+        }, 3000);
+
+        try {
+          fetch(
+            "https://tilte-do-list-default-rtdb.asia-southeast1.firebasedatabase.app/grouse.json",
+            {
+              method: "PUT",
+              mode: "cors",
+              cache: "no-cache",
+              body: JSON.stringify({
+                name: "grouse",
+                wpm: this.wpm,
+              }),
+            }
+          );
+        } catch (error) {
+          console.log(error);
+        }
       }
       this.newinput = true;
     },
@@ -248,63 +349,13 @@ export default {
           array[currentIndex],
         ];
       }
-      console.log(this.words)
 
-      return array;
+      // return array;
     },
   },
 };
 
-const words = ref([
-  "code",
-  "alcohol",
-  "control",
-  "chip",
-  "nomination",
-  "kidnap",
-  "vacuum",
-  "holiday",
-  "cheque",
-  "context",
-  "nationalist",
-  "offer",
-  "herb",
-  "layout",
-  "climb",
-  "harbor",
-  "consider",
-  "ambiguity",
-  "gossip",
-  "inside",
-  "veil",
-  "wrist",
-  "turn",
-  "guerrilla",
-  "marketing",
-  "biology",
-  "topple",
-  "population",
-  "operation",
-  "tin",
-  "joke",
-  "pioneer",
-  "sum",
-  "standard",
-  "hate",
-  "tie",
-  "seal",
-  "summer",
-  "suffering",
-  "franchise",
-  "likely",
-  "blow",
-  "arrest",
-  "spring",
-  "default",
-  "thaw",
-  "gap",
-  "brick",
-  "reinforce",
-  "inspire",
-]);
+// function test() {
+//   restart()
+// }
 </script>
