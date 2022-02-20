@@ -6,7 +6,8 @@
       <pre v-for="(word, index) in words" :key="index"> {{ word }}  </pre>
     </div> -->
     <div>
-      timer: <span v-if="time >= 0">{{ 15-time }}</span> <span v-else>15</span>
+      timer: <span v-if="time >= 0">{{ 15 - time }}</span>
+      <span v-else>15</span>
     </div>
     <div class="full-width text-center">
       <!-- <h6>{{ words[ind]+ " "+ words[ind+1] }}</h6> -->
@@ -153,7 +154,8 @@ export default {
       }
     },
     restart(e) {
-      if(!this.shown) return
+      this.shuffle(this.words)
+      if (!this.shown) return;
       this.opendialog = false;
       this.disableflag = false;
       // const el = document.getElementById('typinginput')
@@ -215,12 +217,12 @@ export default {
         if (this.time < 1) this.time = 1;
       }
       this.ind++;
-      if (!words[this.ind] || this.time==15) {
+      if (!words[this.ind] || this.time == 15) {
         console.log("done");
         this.stopper();
         this.opendialog = true;
         setTimeout(() => {
-          this.shown = true
+          this.shown = true;
         }, 1500);
       }
       this.newinput = true;
@@ -230,10 +232,30 @@ export default {
       clearInterval(this.mywatch);
       clearInterval(this.mymanager);
     },
+    shuffle(array) {
+      let currentIndex = array.length,
+        randomIndex;
+
+      // While there remain elements to shuffle...
+      while (currentIndex != 0) {
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        // And swap it with the current element.
+        [array[currentIndex], array[randomIndex]] = [
+          array[randomIndex],
+          array[currentIndex],
+        ];
+      }
+      console.log(this.words)
+
+      return array;
+    },
   },
 };
 
-const words = [
+const words = ref([
   "code",
   "alcohol",
   "control",
@@ -284,5 +306,5 @@ const words = [
   "brick",
   "reinforce",
   "inspire",
-];
+]);
 </script>
