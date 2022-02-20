@@ -1,21 +1,43 @@
 <template>
-  <q-page class="text-center">
-    <h5 v-if="wpm < 0">0</h5>
-    <h5 v-else>{{ wpm }}</h5>
+  <!-- <q-page class="text-center"> -->
+  <div
+
+    class="text-center container bg-grey-10 q-pt-xl"
+    style="max-height: 100vh; white-space: nowrap; overflow: hidden"
+  >
+    <div class="row">
+      <div class="col-xs-10 offset-xs-1 col-sm-4 offset-sm-4"  >
+        <q-toolbar class="text-white">
+          <div>
+            timer: <span v-if="time >= 0">{{ 15 - time }}</span>
+            <span v-else>15</span>
+          </div>
+          <q-space />
+          <q-toolbar-title class="text-right">
+            <span v-if="wpm || wpm == 0"> {{ wpm }} WPM</span>
+            <span v-else>calculating...</span>
+          </q-toolbar-title>
+        </q-toolbar>
+      </div>
+    </div>
+    <!-- <h5 v-if="wpm < 0">0</h5>
+    <h5 v-else>{{ wpm }}</h5> -->
     <!-- <div class="row full-width">
       <pre v-for="(word, index) in words" :key="index"> {{ word }}  </pre>
     </div> -->
-    <div>
-      timer: <span v-if="time >= 0">{{ 15 - time }}</span>
-      <span v-else>15</span>
-    </div>
-    <div class="full-width text-center">
+    <div
+      class="full-width text-center"
+      :style="$q.platform.has.touch ? ' margin-top: 20px; white-space:nowrap': ' margin-top: 50px;  font-size: 20px; white-space: nowrap' "
+    >
       <!-- <h6>{{ words[ind]+ " "+ words[ind+1] }}</h6> -->
-      <h6 class="row" style="">
+      <span v-if="!opendialog" class="row" style="white-space: nowrap">
         <!-- <span  v-for="word, index in words" :key="index" >
           <span v-if="index>=ind">{{word}}</span>
            </span> -->
-        <div class="col-3 offset-3 text-right q-mr-sm">
+        <span
+          class="wordDisplay col-xs-2 col-md-2 text-right q-pr-sm offset-md-3 q-ml-xl"
+          style="direction: rtl; white-space: nowrap"
+        >
           <!-- <span v-for="n in 2" :key="n">
             <span :style="entered[ind-2 + n]==words[ind-2 + n]? 'color: blue' : 'color: red' " v-if="words[ind -2+ n]">
               {{ words[ind - 2 + n] + " " }}
@@ -23,46 +45,68 @@
           </span> -->
 
           <span
+            class="wordDisplay"
             :style="
-              entered[ind - 2] == words[ind - 2] ? 'color: green' : 'color: red'
+              entered[ind - 2] == words[ind - 2]
+                ? 'color:lightgreen '
+                : 'color: red'
             "
             v-if="words[ind - 2]"
           >
             {{ words[ind - 2] + " " }}
           </span>
           <span
+            class="wordDisplay"
             :style="
-              entered[ind - 1] == words[ind - 1] ? 'color: green' : 'color: red'
+              entered[ind - 1] == words[ind - 1]
+                ? 'color: lightgreen'
+                : 'color: red'
             "
             v-if="words[ind - 1]"
           >
             {{ words[ind - 1] + " " }}
           </span>
-        </div>
-        <div style="" class="flex-grow q-mr-sm">
-          <span v-if="words[ind]" style="color: blue; font-size: 20px">
+        </span>
+        <span style="" class="wordDisplay col-shrink q-pr-sm">
+          <span v-if="words[ind]" style=" ;">
             {{ words[ind] + " " }}
           </span>
-        </div>
-        <div class="col-4 text-left">
-          <span v-for="n in ind + 3" :key="n">
-            <span v-if="n > ind && words[n]">
+        </span>
+        <span
+          class="wordDisplay col-xs-1 col-md-2 text-left"
+          style="white-space: nowrap"
+        >
+          <span v-for="n in ind + 5" :key="n">
+            <span
+              v-if="n > ind && words[n]"
+              :style="n == ind + 1 ? ' ; font-weight:200' : 'font-weight:200'"
+            >
               {{ " " + words[n] + " " }}
             </span>
           </span>
-        </div>
-      </h6>
-      <div class="col-12">
+        </span>
+      </span>
+      <span v-else class="text-white">
+        <h5>{{ wpm }} {{ opendialog }}</h5>
+      </span>
+      <div class="col-12 q-mt-md">
         <div class="flex flex-center">
           <q-input
+            v-if="!opendialog"
+            dark
+            input-class="q-pa-md"
+            input-style=" font-size: 25px;caret-color: transparent; cursor:default; user-select: none"
+            borderless
+            placeholder="..."
             ref="typinginput"
-            @keydown.esc="stopper"
+            @focus="onfocus"
             @keyup="timer"
+            @keydown.esc="stopper"
             @keydown.tab="restart"
+            @keydown.space="next"
+            @blur="focusfn"
             autofocus
             style="width: 200px"
-            @keydown.space="next"
-            outlined
             dense
             :disable="disableflag"
             v-model="text"
@@ -70,16 +114,27 @@
             id="typinginput"
           />
           <q-btn
+            @blur="btnfocus"
+            ref="replay"
+            v-if="opendialog"
             flat
             round
-            color="primary"
+            color="white"
+            icon="mdi-restart"
+            @click="hideresult"
+          />
+          <q-btn
+            v-else
+            flat
+            round
+            color="white"
             icon="mdi-restart"
             @click="restart"
           />
         </div>
       </div>
     </div>
-    <q-dialog v-model="opendialog" persistent>
+    <!-- <q-dialog v-model="opendialog" persistent>
       <q-card class="q-pa-xl" style="border: double orange">
         <q-card-section class="full-wdith" style="font-size: 28px; color: blue">
           youre typing in
@@ -88,7 +143,6 @@
         </q-card-section>
         <q-card-actions class="q-mt-md" vertical align="center">
           <q-btn
-            autofocus
             unelevated
             outline
             @keydown="restart"
@@ -97,26 +151,30 @@
           />
         </q-card-actions>
       </q-card>
-    </q-dialog>
+    </q-dialog> -->
+  </div>
 
-    <!-- <q-btn color="primary" icon="check" label="get" @click="download" />
+  <!-- <q-btn color="primary" icon="check" label="get" @click="download" />
     <q-btn color="primary" icon="check" label="upload" @click="upload" /> -->
-  </q-page>
+  <!-- </q-page> -->
 </template>
 
 <script>
 import axios from "axios";
 import { ref } from "vue";
+import {useQuasar} from 'quasar'
 import { useRouter } from "vue-router";
 import { onMounted } from "vue";
 
 var el;
 export default {
   setup() {
+    const $q = useQuasar()
     const disableflag = ref(false);
     const wpm = ref(0);
     const mywatch = ref(null);
     // const mymanager = ref(null);
+    const typinginput = ref(null);
     const router = useRouter();
     const ind = ref(0);
     const time = ref(-1);
@@ -124,6 +182,8 @@ export default {
     const text = ref(null);
     const entered = ref([]);
     const characters = ref(0);
+    const opendialog = ref(false);
+    const replay = ref(null);
     const SERVER_URL = ref(
       "https://tilte-do-list-default-rtdb.asia-southeast1.firebasedatabase.app/grouse.json"
     );
@@ -197,7 +257,6 @@ export default {
           array[currentIndex],
         ];
       }
-      // return array;
     }
 
     return {
@@ -205,16 +264,54 @@ export default {
       text,
       wpm,
       words,
+      typinginput,
       characters,
       ind,
       disableflag,
       entered,
       shown: ref(false),
-      opendialog: ref(false),
+      opendialog,
+      replay,
+      hideresult(e) {
+        // restart()
+        disableflag.value = false;
+        opendialog.value = false;
+        shuffle(words.value);
+        // typinginput.value.blur();
+        // $.nextTick(() => {
+        //   setTimeout(() => {
+        //     typinginput.value.focus();
+        //   }, 20);
+        // });
+        e.preventDefault();
+        ind.value = -1;
+        entered.value = [];
+        // clearInterval(mywatch.value);
+        // clearInterval(mymanager.value);
+        // time.value = -1;
+        // characters.value = 0;
+        // text.value = null;
+        // wpm.value = 0;
+      },
+      btnfocus(ev) {
+        // replay.value.focus()
+      },
     };
   },
   methods: {
-    timer() {
+    onfocus() {
+      if (this.ind==-1) {
+        this.restart();
+      }
+    },
+    timer(ev) {
+      const charCode = ev.which;
+
+      if (charCode < 64 || charCode > 91) {
+        ev.preventDefault();
+        return;
+      }
+
       if (this.time < 0) {
         this.manager();
         this.time = 0;
@@ -225,19 +322,22 @@ export default {
         return;
       }
     },
+    focusfn() {
+      this.$refs.typinginput.focus();
+    },
     restart(e) {
       this.shuffle(this.words);
-
-      this.disableflag = false;
-      // const el = document.getElementById('typinginput')
-
-      this.$refs.typinginput.blur();
-      this.$nextTick(() => {
-        setTimeout(() => {
-          this.$refs.typinginput.focus();
-        }, 500);
-      });
+      if(e)
       e.preventDefault();
+      // this.$refs.typinginput.blur();
+      // this.$nextTick(() => {
+      //   setTimeout(() => {
+      //     this.$refs.typinginput.focus();
+      //   }, 20);
+      // });
+
+      this.opendialog = false;
+      this.disableflag = false;
       this.ind = 0;
       this.entered = [];
       clearInterval(this.mywatch);
@@ -245,10 +345,7 @@ export default {
       this.time = -1;
       this.characters = 0;
       this.text = null;
-      // router.go();
-
-      if (this.shown) this.opendialog = false;
-      else return;
+      this.opendialog = false;
       this.wpm = 0;
     },
     manager() {
@@ -303,6 +400,7 @@ export default {
       }
       this.ind++;
       if (!this.words[this.ind] || this.time == 15) {
+        this.disableflag = true;
         this.stopper();
         this.opendialog = true;
         setTimeout(() => {
@@ -359,3 +457,20 @@ export default {
 //   restart()
 // }
 </script>
+
+<style>
+.wordDisplay {
+  color: antiquewhite;
+  /* color: ; */
+}
+
+::selection {
+  color: rgba(255, 255, 255, 1);
+}
+</style>
+
+<style lang="sass">
+
+.container
+  border: 20px solid $grey-10
+</style>

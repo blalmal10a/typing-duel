@@ -1,7 +1,7 @@
 <template>
-  <q-layout view="hHh lpR fFf">
+  <q-layout view="hHh lpR fFf"  style="height:100vh">
 
-    <q-header class="bg-primary text-white">
+    <q-header reveal  class="bg-primary text-white">
       <q-toolbar>
         <q-avatar size="100px" style="border-radius: 50%;  border-color:aqua; border:1px solid ">
             <q-img
@@ -18,8 +18,8 @@
       </q-toolbar>
     </q-header>
 
-    <q-page-container>
-      <router-view />
+    <q-page-container style="height:100%; white-space: nowrap; overflow: hidden">
+      <router-view style="height:100%" />
     </q-page-container>
 
   </q-layout>
