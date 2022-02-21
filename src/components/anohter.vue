@@ -1,16 +1,53 @@
 <template>
-  <q-page class="text-center">
-    <h5>{{ wpm }}</h5>
+  <!-- <q-page class="text-center"> -->
+  <div
+    class="text-center container bg-grey-10 q-pt-xl"
+    style="max-height: 100vh; white-space: nowrap; overflow: hidden"
+  >
+    <div class="row">
+      <div class="col-xs-10 offset-xs-1 col-sm-4 offset-sm-4">
+        <q-toolbar class="text-white">
+          <div>
+            timer: <span v-if="time >= 0">{{ 15 - time }}</span>
+            <span v-else>15</span>
+          </div>
+          <q-space />
+          <q-toolbar-title class="text-right">
+            <span v-if="wpm || wpm == 0"> {{ wpm }} WPM</span>
+            <span v-else>calculating...</span>
+          </q-toolbar-title>
+        </q-toolbar>
+      </div>
+    </div>
+    <!-- <h5 v-if="wpm < 0">0</h5>
+    <h5 v-else>{{ wpm }}</h5> -->
     <!-- <div class="row full-width">
       <pre v-for="(word, index) in words" :key="index"> {{ word }}  </pre>
     </div> -->
-    <div class="full-width text-center">
+    <div style="margin-top: 50px">
+      <!-- <span style="font-size: 24px; font-weight: 1000;  padding-left: 30px; padding-right:30px; padding-top: 20px; padding-bottom: 20px; background: rgba(255,253,208, 0.2) ;border: 2px double rgba(255,253,208, 0.1); border-radius: 30%" class="wordDisplay col-shrink q-pr-sm">
+        <span v-if="words[ind]" style=" ;">
+          {{ words[ind] + " " }}
+        </span>
+      </span> -->
+    </div>
+    <div
+      class="full-width text-center"
+      :style="
+        $q.platform.has.touch
+          ? ' margin-top: 20px; white-space:nowrap'
+          : ' margin-top: 50px;  font-size: 20px; white-space: nowrap'
+      "
+    >
       <!-- <h6>{{ words[ind]+ " "+ words[ind+1] }}</h6> -->
-      <h6 class="row" style="">
+      <span v-if="!opendialog" class="row" style="white-space: nowrap">
         <!-- <span  v-for="word, index in words" :key="index" >
           <span v-if="index>=ind">{{word}}</span>
            </span> -->
-        <div class="col-3 offset-3 text-right q-mr-sm">
+        <span
+          class="wordDisplay col-xs-2 col-md-2 text-right q-pr-sm offset-md-3 q-ml-xl"
+          style="direction: rtl; white-space: nowrap"
+        >
           <!-- <span v-for="n in 2" :key="n">
             <span :style="entered[ind-2 + n]==words[ind-2 + n]? 'color: blue' : 'color: red' " v-if="words[ind -2+ n]">
               {{ words[ind - 2 + n] + " " }}
@@ -18,279 +55,435 @@
           </span> -->
 
           <span
+            class="wordDisplay"
             :style="
-              entered[ind - 2] == words[ind - 2] ? 'color: green' : 'color: red'
+              entered[ind - 2] == words[ind - 2]
+                ? 'color:lightgreen '
+                : 'color: red'
             "
             v-if="words[ind - 2]"
           >
             {{ words[ind - 2] + " " }}
           </span>
           <span
+            class="wordDisplay"
             :style="
-              entered[ind - 1] == words[ind - 1] ? 'color: green' : 'color: red'
+              entered[ind - 1] == words[ind - 1]
+                ? 'color: lightgreen'
+                : 'color: red'
             "
             v-if="words[ind - 1]"
           >
             {{ words[ind - 1] + " " }}
           </span>
-        </div>
-        <div style="" class="flex-grow q-mr-sm">
-          <span style="color: blue; font-size: 20px">
+        </span>
+        <!-- <span style="" class="wordDisplay col-shrink q-pr-sm"> -->
+      <span style="font-size: 24px; font-weight: 1000;  padding-left: 30px; padding-right:30px; padding-top: 20px; padding-bottom: 20px; background: rgba(255,253,208, 0.2) ;border: 2px double rgba(255,253,208, 0.1); border-radius: 30%" class="wordDisplay col-shrink q-pr-sm">
+
+          <span v-if="words[ind]" style=" ;">
             {{ words[ind] + " " }}
           </span>
-        </div>
-        <div class="col-4 text-left">
-          <span v-for="n in ind + 3" :key="n">
-            <span v-if="n > ind">
+        </span>
+        <!-- <span
+          class="wordDisplay col-xs-1 col-md-2 text-left"
+          style="white-space: nowrap"
+        > -->
+
+      <span style="font-size: 24px; font-weight: 1000;  padding-left: 30px; padding-right:30px; padding-top: 20px; padding-bottom: 20px; " class="wordDisplay col-shrink q-pr-sm">
+          <span v-for="n in ind + 1" :key="n">
+            <span
+              v-if="n > ind && words[n]"
+              :style="n == ind + 1 ? ' ; font-weight:200' : 'font-weight:200'"
+            >
               {{ " " + words[n] + " " }}
             </span>
           </span>
-        </div>
-      </h6>
-      <div class="col-12">
+        </span>
+      </span>
+      <span v-else class="text-white">
+        <h5>{{ wpm }} {{ opendialog }}</h5>
+      </span>
+      <div class="col-12 q-mt-md">
         <div class="flex flex-center">
           <q-input
-            @blur="blurfn"
-            @keydown.esc="stopper"
+            v-if="!opendialog"
+            dark
+            input-class="q-pa-md"
+            input-style=" font-size: 25px;caret-color: transparent; cursor:default; user-select: none"
+            borderless
+            placeholder="..."
+            ref="typinginput"
+            @focus="onfocus"
             @keyup="timer"
+            @keydown.esc="stopper"
             @keydown.tab="restart"
+            @keydown.space="next"
+            @blur="focusfn"
             autofocus
             style="width: 200px"
-            @keydown.space="next"
-            outlined
             dense
+            :disable="disableflag"
             v-model="text"
             type="text"
             id="typinginput"
           />
-          <!-- <q-btn
+          <q-btn
+            @blur="btnfocus"
+            ref="replay"
+            v-if="opendialog"
             flat
             round
-            color="primary"
+            color="white"
+            icon="mdi-restart"
+            @click="hideresult"
+          />
+          <q-btn
+            v-else
+            flat
+            round
+            color="white"
             icon="mdi-restart"
             @click="restart"
-          /> -->
+          />
         </div>
       </div>
     </div>
+    <!-- <q-dialog v-model="opendialog" persistent>
+      <q-card class="q-pa-xl" style="border: double orange">
+        <q-card-section class="full-wdith" style="font-size: 28px; color: blue">
+          youre typing in
+          <span style="color: purple; font-size: 32px">{{ wpm }}</span> words
+          per minute.. press enter to close the dialog
+        </q-card-section>
+        <q-card-actions class="q-mt-md" vertical align="center">
+          <q-btn
+            unelevated
+            outline
+            @keydown="restart"
+            @click="restart"
+            label="close"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog> -->
+  </div>
 
-    <!-- <q-btn color="primary" icon="check" label="get" @click="download" />
+  <!-- <q-btn color="primary" icon="check" label="get" @click="download" />
     <q-btn color="primary" icon="check" label="upload" @click="upload" /> -->
-  </q-page>
+  <!-- </q-page> -->
 </template>
 
 <script>
 import axios from "axios";
 import { ref } from "vue";
+import { useQuasar } from "quasar";
 import { useRouter } from "vue-router";
-import { confirmPasswordReset } from "@firebase/auth";
+import { onMounted } from "vue";
 
+var el;
 export default {
   setup() {
+    const $q = useQuasar();
+    const disableflag = ref(false);
     const wpm = ref(0);
     const mywatch = ref(null);
-    const mymanager = ref(null);
+    // const mymanager = ref(null);
+    const typinginput = ref(null);
     const router = useRouter();
     const ind = ref(0);
     const time = ref(-1);
+    const newinput = ref(false);
     const text = ref(null);
     const entered = ref([]);
     const characters = ref(0);
-    const url =
-      "https://tilte-do-list-default-rtdb.asia-southeast1.firebasedatabase.app/sadge.json";
+    const opendialog = ref(false);
+    const replay = ref(null);
+    const SERVER_URL = ref(
+      "https://tilte-do-list-default-rtdb.asia-southeast1.firebasedatabase.app/grouse.json"
+    );
+    const words = ref([
+      "code",
+      "alcohol",
+      "control",
+      "chip",
+      "nomination",
+      "kidnap",
+      "vacuum",
+      "holiday",
+      "cheque",
+      "context",
+      "nationalist",
+      "offer",
+      "herb",
+      "layout",
+      "climb",
+      "harbor",
+      "consider",
+      "ambiguity",
+      "gossip",
+      "inside",
+      "veil",
+      "wrist",
+      "turn",
+      "guerrilla",
+      "marketing",
+      "biology",
+      "topple",
+      "population",
+      "operation",
+      "tin",
+      "joke",
+      "pioneer",
+      "sum",
+      "standard",
+      "hate",
+      "tie",
+      "seal",
+      "summer",
+      "suffering",
+      "franchise",
+      "likely",
+      "blow",
+      "arrest",
+      "spring",
+      "default",
+      "thaw",
+      "gap",
+      "brick",
+      "reinforce",
+      "inspire",
+    ]);
 
-    function manager() {
-      mymanager.value = setInterval(() => {
-        if (time.value == 15) {
-          console.log("ended");
-          stopper();
-          setTimeout(() => {
-            time.value = -1;
-          }, 1000);
-        } else {
-          console.log('else')
-          wpm.value = parseInt((characters.value * 60) / (4 * time.value));
-          try {
-            axios.put(
-              url,
-              JSON.stringify({
-                name: "sadge",
-                wpm: wpm.value,
-              })
-            );
-            console.log("uploaded");
-          } catch (error) {
-            console.log(error);
-          }
-        }
-      }, 1000);
+    shuffle(words.value);
+    function shuffle(array) {
+      let currentIndex = array.length,
+        randomIndex;
+
+      // While there remain elements to shuffle...
+      while (currentIndex != 0) {
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        // And swap it with the current element.
+        [array[currentIndex], array[randomIndex]] = [
+          array[randomIndex],
+          array[currentIndex],
+        ];
+      }
     }
+
     return {
       time,
       text,
       wpm,
       words,
+      typinginput,
       characters,
       ind,
+      disableflag,
       entered,
-      async upload() {
-        // try {
-        //   const response = await fetch(url, {
-        //     method: 'PUT',
-        //     mode: 'cors',
-        //     cache: 'no-cache',
-        //     body: JSON.stringify(['ASDF', '22','FFFF', 2, 3,1234])
-        //   }
-        //   )
-        //   console.log(response.json())
+      shown: ref(false),
+      opendialog,
+      replay,
+      hideresult(e) {
+        // restart()
+        disableflag.value = false;
+        opendialog.value = false;
+        shuffle(words.value);
+        // typinginput.value.blur();
+        // $.nextTick(() => {
+        //   setTimeout(() => {
+        //     typinginput.value.focus();
+        //   }, 20);
+        // });
+        e.preventDefault();
+        ind.value = -1;
+        entered.value = [];
+        // clearInterval(mywatch.value);
+        // clearInterval(mymanager.value);
+        // time.value = -1;
+        // characters.value = 0;
+        // text.value = null;
+        // wpm.value = 0;
+      },
+      btnfocus(ev) {
+        // replay.value.focus()
+      },
+    };
+  },
+  methods: {
+    onfocus() {
+      if (this.ind == -1) {
+        this.restart();
+      }
+    },
+    timer(ev) {
+      const charCode = ev.which;
 
-        // } catch (error) {
+      if (charCode < 64 || charCode > 91) {
+        ev.preventDefault();
+        return;
+      }
 
-        // }
+      if (this.time < 0) {
+        this.manager();
+        this.time = 0;
+        this.mywatch = setInterval(() => {
+          this.time++;
+        }, 1000);
+      } else {
+        return;
+      }
+    },
+    focusfn() {
+      this.$refs.typinginput.focus();
+    },
+    restart(e) {
+      this.shuffle(this.words);
+      if (e) e.preventDefault();
+      // this.$refs.typinginput.blur();
+      // this.$nextTick(() => {
+      //   setTimeout(() => {
+      //     this.$refs.typinginput.focus();
+      //   }, 20);
+      // });
+
+      this.opendialog = false;
+      this.disableflag = false;
+      this.ind = 0;
+      this.entered = [];
+      clearInterval(this.mywatch);
+      clearInterval(this.mymanager);
+      this.time = -1;
+      this.characters = 0;
+      this.text = null;
+      this.opendialog = false;
+      this.wpm = 0;
+    },
+    manager() {
+      this.mymanager = setInterval(() => {
+        if (this.time == 15) {
+          this.stopper();
+          this.opendialog = true;
+        } else {
+          this.wpm = parseInt((this.characters * 60) / (4 * this.time));
+          if (this.newinput) {
+            try {
+              fetch(
+                "https://tilte-do-list-default-rtdb.asia-southeast1.firebasedatabase.app/grouse.json",
+                {
+                  method: "PUT",
+                  mode: "cors",
+                  cache: "no-cache",
+                  body: JSON.stringify({
+                    name: "grouse",
+                    wpm: this.wpm,
+                  }),
+                }
+              );
+            } catch (error) {
+              console.log(error);
+            }
+            // try {
+            //   axios.put(
+            //     this.url,
+            //     JSON.stringify({
+            //       name: "grouse",
+            //       wpm: this.wpm,
+            //     })
+            //   );
+            // } catch (error) {
+            //   console.log(error);
+            // }
+            this.newinput = false;
+          }
+        }
+      }, 1000);
+    },
+
+    next(ev) {
+      ev.preventDefault();
+      if (!this.text) return;
+      this.entered.push(this.text);
+      this.text = null;
+      if (this.words[this.ind] == this.entered[this.ind]) {
+        this.characters += this.words[this.ind].length;
+        if (this.time < 1) this.time = 1;
+      }
+      this.ind++;
+      if (!this.words[this.ind] || this.time == 15) {
+        this.disableflag = true;
+        this.stopper();
+        this.opendialog = true;
+        setTimeout(() => {
+          this.shown = true;
+        }, 3000);
+
         try {
-          const mydata = ["kkkk", "hehe", 12];
-          axios.put(
-            url,
-            JSON.stringify(["what the fuck", "ASDF", "22", "FFFF", 2, 3, 1234])
+          fetch(
+            "https://tilte-do-list-default-rtdb.asia-southeast1.firebasedatabase.app/grouse.json",
+            {
+              method: "PUT",
+              mode: "cors",
+              cache: "no-cache",
+              body: JSON.stringify({
+                name: "grouse",
+                wpm: this.wpm,
+              }),
+            }
           );
         } catch (error) {
           console.log(error);
         }
-      },
-      next(ev) {
-        ev.preventDefault();
-        if (!text.value) return;
-        entered.value.push(text.value);
+      }
+      this.newinput = true;
+    },
+    stopper() {
+      this.disableflag = true;
+      clearInterval(this.mywatch);
+      clearInterval(this.mymanager);
+    },
+    shuffle(array) {
+      let currentIndex = array.length,
+        randomIndex;
 
-        text.value = null;
-        if (words[ind.value] == entered.value[ind.value]) {
-          characters.value += words[ind.value].length;
-          if (time.value < 1) time.value = 1;
-          // wpm.value = parseInt((characters.value * 60) / (4 * time.value));
+      // While there remain elements to shuffle...
+      while (currentIndex != 0) {
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
 
-          // try {
-          //   axios.put(
-          //     url,
-          //     JSON.stringify({
-          //       name: "grouse",
-          //       wpm: wpm.value,
-          //     })
-          //   );
-          //   console.log('uploaded')
-          // } catch (error) {
-          //   console.log(error);
-          // }
-        }
+        // And swap it with the current element.
+        [array[currentIndex], array[randomIndex]] = [
+          array[randomIndex],
+          array[currentIndex],
+        ];
+      }
 
-        ind.value++;
-      },
-      blurfn() {
-        time.value = -1;
-        console.log(time.value);
-      },
-      restart(e) {
-        // console.log("hehe");
-        // router.push('/test')
-        e.preventDefault();
-
-        router.go();
-
-        // window.setTimeout(() => {element.focus()
-        // console.log('aaa')}, 1);
-      },
-      timer() {
-        if (time.value < 0) {
-          manager();
-          time.value = 0;
-          mywatch.value = setInterval(() => {
-            console.log(time.value);
-            time.value++;
-          }, 1000);
-        } else {
-          return;
-        }
-      },
-      manager,
-      stopper() {
-        clearInterval(mywatch.value);
-      },
-      async download() {
-        // try {
-        //   fetch(
-        //     "https://tilte-do-list-default-rtdb.asia-southeast1.firebasedatabase.app/tie.json"
-        //   )
-        //     .then((response) => response.json())
-        //     .then((data) => console.log(data));
-        // } catch (error) {
-        //   console.log(error);
-        // }
-        try {
-          const res = await axios.get(url);
-          console.log(res.data);
-        } catch (error) {
-          console.log(error);
-        }
-      },
-    };
+      // return array;
+    },
   },
 };
 
-const words = [
-  "code",
-  "alcohol",
-  "control",
-  "chip",
-  "nomination",
-  "kidnap",
-  "vacuum",
-  "holiday",
-  "cheque",
-  "context",
-  "nationalist",
-  "offer",
-  "herb",
-  "layout",
-  "climb",
-  "harbor",
-  "consider",
-  "ambiguity",
-  "gossip",
-  "inside",
-  "veil",
-  "wrist",
-  "turn",
-  "guerrilla",
-  "marketing",
-  "biology",
-  "topple",
-  "population",
-  "operation",
-  "tin",
-  "joke",
-  "pioneer",
-  "sum",
-  "standard",
-  "hate",
-  "tie",
-  "seal",
-  "summer",
-  "suffering",
-  "franchise",
-  "likely",
-  "blow",
-  "arrest",
-  "spring",
-  "default",
-  "thaw",
-  "gap",
-  "brick",
-  "reinforce",
-  "inspire",
-];
-
-function timerfun() {
-  console.log("call timer fun");
-  time.value++;
-  console.log(time.value);
-}
+// function test() {
+//   restart()
+// }
 </script>
+
+<style>
+.wordDisplay {
+  color: antiquewhite;
+  /* color: ; */
+}
+
+::selection {
+  color: rgba(255, 255, 255, 1);
+}
+</style>
+
+<style lang="sass">
+
+.container
+  border: 20px solid $grey-10
+</style>
