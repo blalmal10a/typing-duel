@@ -227,8 +227,8 @@ function searchfunction(param) {
   joinloadingflag.value = true;
   searchinterval = setInterval(async () => {
     counter++;
-    if (counter == 5) {
-      alert("unable to find match, maybe next time");
+    if (counter == 10) {
+      alert("unable to find match, you may invite your frineds :)");
       // console.log("end");
       clearInterval(searchinterval);
       joinloadingflag.value = false;
