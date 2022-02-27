@@ -166,22 +166,24 @@
 import axios from "axios";
 import { ref, watch } from "vue";
 import { useQuasar } from "quasar";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { onMounted } from "vue";
 
 var el;
+
 export default {
-  props: ['username', 'playerid'],
+  props: ["username", "playerid"],
+
   setup(props) {
-    console.log(props.playerid)
-    const propstest = ref('props.test')
+    const route = useRoute();
+    // console.log(props.playerid);
+    const propstest = ref("props.test");
     const $q = useQuasar();
     const disableflag = ref(false);
     const wpm = ref(0);
     const mywatch = ref(null);
     // const mymanager = ref(null);
     const typinginput = ref(null);
-    const router = useRouter();
     const ind = ref(0);
     const time = ref(-1);
     const newinput = ref(false);
@@ -247,7 +249,7 @@ export default {
     ]);
 
     function printer() {
-      console.log(props.playerid)
+      console.log(props.playerid);
     }
     shuffle(words.value);
     function shuffle(array) {
@@ -268,14 +270,12 @@ export default {
       }
     }
 
-    watch(
-      propstest, (newvalue, oldvalue) => {
-        console.log('propstest')
-        console.log(propstest.value)
-      }
-    )
+    watch(propstest, (newvalue, oldvalue) => {
+      console.log("propstest");
+      console.log(propstest.value);
+    });
 
-
+    onMounted(() => {});
 
     return {
       printer,
@@ -356,7 +356,7 @@ export default {
       this.wpm = 0;
     },
     manager() {
-      console.log(this.playerid)
+      console.log(this.playerid);
       this.mymanager = setInterval(() => {
         if (this.time == 15) {
           this.stopper();
@@ -366,13 +366,15 @@ export default {
           if (this.newinput) {
             try {
               var player;
-              if(this.playerid){
-                 player = 'player_1'
-              }else{
-                 player = 'player_2'
+              if (this.playerid) {
+                player = "player_1";
+              } else {
+                player = "player_2";
               }
               fetch(
-                "https://tilte-do-list-default-rtdb.asia-southeast1.firebasedatabase.app/"+player+".json",
+                "https://tilte-do-list-default-rtdb.asia-southeast1.firebasedatabase.app/" +
+                  player +
+                  ".json",
                 {
                   method: "PATCH",
                   mode: "cors",
@@ -481,7 +483,7 @@ export default {
 }
 </style>
 
-<style lang="sass" scoped >
+<style lang="sass" scoped>
 
 .container
   border: 20px solid $grey-10

@@ -28,10 +28,11 @@
           outline
           color="gold"
           :label="hostlabel"
-          @click="host"
+          @click="pushmultiplayer"
         />
         <q-separator class="q-my-lg" spaced vertical dark />
         <q-btn
+          v-if="$route.meta.multiplayer"
           :loading="joinloadingflag"
           push
           class="q-mr-lg"
@@ -85,12 +86,17 @@
         </q-card>
       </q-dialog>
       <q-dialog v-model="resultdialog" persistent>
-        <q-card style="width: 50vw; height: 40%">
+        <q-card style="font-size: 30px; font-weight: 700; width: 50vw">
           <q-card-section>
             {{ result }}
           </q-card-section>
-          <q-card-section> your score: {{ myscore }} </q-card-section>
-          <q-card-section> opponent score: {{ oppscore }} </q-card-section>
+          <!-- <q-card-section> {{yourname}}: <span v-if="myscore">{{ myscore }}</span> <span  v-else> Calculating..</span>  (you)</q-card-section>
+          <q-card-section> {{oppname}}: <span v-if="oppscore">{{ oppscore }} </span> <span v-else> Calculating..</span> </q-card-section> -->
+
+          <q-card-section  > <div v-if="yourname">{{ yourname }}: {{ myscore }} WPM (YOU)</div> <div v-else>Calculating..</div></q-card-section>
+          <q-card-section style="q-mt-sm" >
+            <div v-if="oppscore">{{ oppname }}: {{ oppscore }}wpm</div>
+          </q-card-section>
           <q-card-actions vertical align="center">
             <q-btn v-close-popup flat label="close" />
           </q-card-actions>
@@ -103,6 +109,9 @@
 <script>
 import { ref } from "@vue/reactivity";
 import { useQuasar } from "quasar";
+// import {useRouter, useRoute} from 'vue-router'
+
+import { useRoute, useRouter } from "vue-router";
 
 let randno = Math.random();
 // console.log(parseInt(randno * 100));
@@ -112,15 +121,17 @@ const suffix = "_0" + randno;
 const startingin = ref(3);
 const readysetdialog = ref(false);
 const timer = ref(15);
-const hostlabel = ref("create");
+const hostlabel = ref("Multiplayer");
 const joinloadingflag = ref(false);
 const p1 = ref(true);
-const dialogflag = ref(true);
+const dialogflag = ref(false);
 const ign = ref("Player");
 const username = ref(ign.value + suffix);
 const resultdialog = ref(false);
 const myscore = ref(null);
 const oppscore = ref(null);
+const yourname = ref(null);
+const oppname = ref(null);
 const result = ref(null);
 var hostdata = {
   hosted: false,
@@ -129,8 +140,14 @@ var hostdata = {
 };
 var searchinterval,
   counter = 0;
+
+// console.log($route.meta.multiplayer)
 export default {
   setup() {
+    const route = useRoute();
+    const $router = useRouter();
+
+    if (route.meta.multiplayer) dialogflag.value = true;
     return {
       dialogflag,
       ign,
@@ -148,12 +165,20 @@ export default {
       myscore,
       oppscore,
       result,
+      yourname,
+      oppname,
+      pushmultiplayer() {
+        $router.push("/multiplayer");
+        setTimeout(() => {
+          $router.go();
+        }, 300);
+      },
     };
   },
 };
 
 async function host() {
-  updateinfo();
+  // updateinfo();
   return;
   hostdata = await gethost();
   if (hostdata.hosted) {
@@ -171,7 +196,7 @@ async function join() {
   username.value = "test";
   // $q.notify('searching')
   hostdata = await gethost();
-  console.log(hostdata);
+  // console.log(hostdata);
   if (hostdata.started) {
     //cant game was started
     setTimeout(() => {
@@ -204,7 +229,7 @@ function searchfunction(param) {
     counter++;
     if (counter == 5) {
       alert("unable to find match, maybe next time");
-      console.log("end");
+      // console.log("end");
       clearInterval(searchinterval);
       joinloadingflag.value = false;
       counter = 0;
@@ -313,10 +338,10 @@ function countdown() {
       // console.log("less than zero");
       timer.value = 15;
       clearInterval(intervariable);
+      resultdialog.value = true;
       setTimeout(async () => {
         await getresult();
-        resultdialog.value = true;
-      }, 500);
+      }, 1200);
 
       // console.log("end of less than zero");
     }
@@ -364,10 +389,14 @@ async function getresult() {
   // console.log(player1);
   if (p1.value) {
     myscore.value = player1.wpm;
+    yourname.value = player1.name;
     oppscore.value = player2.wpm;
+    oppname.value = player2.name;
   } else {
     myscore.value = player2.wpm;
+    yourname.value = player2.name;
     oppscore.value = player1.wpm;
+    oppname.value = player1.name;
   }
 }
 </script>
