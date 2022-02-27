@@ -179,6 +179,59 @@ import { ref } from "vue";
 import { useQuasar } from "quasar";
 import { useRouter } from "vue-router";
 import { onMounted } from "vue";
+// const functions = require('firebase-functions')
+import {getFunctions, httpsCallable} from 'firebase/functions'
+
+function mySetTimefn(){
+  const date = new Date()
+  const startTime = date.getTime() + 5000
+  // fetch()
+  var countdown = 7
+}
+
+var retrievedTime
+
+console.log(parseInt(Math.random()*900) +1000)
+
+function myCalltimefn(){
+  // fetch()
+
+  const delayTime= parseInt(Math.random()*900) + 100 //pawimawh lo
+  const date = new Date()
+
+  retrievedTime =  date.getTime() + 7000 - delayTime //fetch function lem2
+
+}
+
+function starterFunction (){
+  while(1){
+    const checkDate = new Date()
+    const sec = checkDate.getTime()
+    if(sec >= retrievedTime){
+      break;
+    }
+  }
+}
+
+
+
+// console.log(functions)
+// console.log(getFunctions())
+// const fns = getFunctions()
+// const addmsg = httpsCallable(fns, 'addmsg')
+// addmsg({
+//   text: 'the message text'
+// }).then((result)=>{
+//   const data = result.data
+//   const sanitizedMsg = data.text
+//   console.log(sanitizedMsg)
+// }).catch((error)=>{
+//   const code = error.code;
+//   const msg = error.message
+//   const details = error.details
+//   console.log(code, msg, details)
+// })
+var d
 
 var el;
 export default {

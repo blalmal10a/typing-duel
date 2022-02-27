@@ -75,12 +75,35 @@ module.exports = configure(function (ctx) {
       // extractCSS: false,
 
       // https://quasar.dev/quasar-cli/handling-webpack
-      // "chain" is a webpack-chain object https://github.com/neutrinojs/webpack-chain
+      // "chain" is a webpack- chain object https://github.com/neutrinojs/webpack-chain
       chainWebpack(chain) {
         chain
           .plugin("eslint-webpack-plugin")
           .use(ESLintPlugin, [{ extensions: ["js", "vue"] }]);
       },
+
+      // chainWebpack (chain) {
+      //   const nodePolyfillWebpackPlugin = require('node-polyfill-webpack-plugin')
+      //   chain.plugin('node-polyfill').use(nodePolyfillWebpackPlugin)
+      // }
+
+
+      // build: {
+      //   extendWebpack (cfg) {
+      //     cfg.module.rules.push({
+      //       test: /\.pug$/,
+      //       loader: 'firebase-functions'
+      //       exclude: ''
+      //     })
+      //   }
+      // }
+
+
+
+
+
+
+
     },
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
@@ -153,8 +176,8 @@ module.exports = configure(function (ctx) {
       },
 
       manifest: {
-        name: `Vurebase`,
-        short_name: `Vurebase`,
+        name: `Tilte Type`,
+        short_name: `Tilte Type`,
         description: `vue 3 firebase`,
         display: "standalone",
         orientation: "portrait",

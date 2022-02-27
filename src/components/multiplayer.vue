@@ -7,14 +7,14 @@
     <div class="row">
       <div class="col-xs-10 offset-xs-1 col-sm-4 offset-sm-4">
         <q-toolbar class="text-white">
-          <div>
+          <!-- <div>
             timer: <span v-if="time >= 0">{{ 15 - time }}</span>
             <span v-else>15</span>
-          </div>
+          </div> -->
           <q-space />
           <q-toolbar-title class="text-right">
-            <span v-if="wpm || wpm == 0"> {{ wpm }} WPM</span>
-            <span v-else>calculating...</span>
+            <!-- <span v-if="wpm || wpm == 0"> {{ wpm }} WPM</span>
+            <span v-else>calculating...</span> -->
           </q-toolbar-title>
         </q-toolbar>
       </div>
@@ -90,7 +90,7 @@
         </span>
       </span>
       <span v-else class="text-white">
-        <h5>{{ wpm }} {{ opendialog }}</h5>
+        <!-- <h5>{{ wpm }} WPM</h5> -->
       </span>
       <div class="col-12 q-mt-md">
         <div class="flex flex-center">
@@ -164,14 +164,17 @@
 
 <script>
 import axios from "axios";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useQuasar } from "quasar";
 import { useRouter } from "vue-router";
 import { onMounted } from "vue";
 
 var el;
 export default {
-  setup() {
+  props: ['username', 'playerid'],
+  setup(props) {
+    console.log(props.playerid)
+    const propstest = ref('props.test')
     const $q = useQuasar();
     const disableflag = ref(false);
     const wpm = ref(0);
@@ -243,6 +246,9 @@ export default {
       "inspire",
     ]);
 
+    function printer() {
+      console.log(props.playerid)
+    }
     shuffle(words.value);
     function shuffle(array) {
       let currentIndex = array.length,
@@ -262,7 +268,18 @@ export default {
       }
     }
 
+    watch(
+      propstest, (newvalue, oldvalue) => {
+        console.log('propstest')
+        console.log(propstest.value)
+      }
+    )
+
+
+
     return {
+      printer,
+      propstest,
       time,
       text,
       wpm,
@@ -276,25 +293,12 @@ export default {
       opendialog,
       replay,
       hideresult(e) {
-        // restart()
         disableflag.value = false;
         opendialog.value = false;
         shuffle(words.value);
-        // typinginput.value.blur();
-        // $.nextTick(() => {
-        //   setTimeout(() => {
-        //     typinginput.value.focus();
-        //   }, 20);
-        // });
         e.preventDefault();
         ind.value = -1;
         entered.value = [];
-        // clearInterval(mywatch.value);
-        // clearInterval(mymanager.value);
-        // time.value = -1;
-        // characters.value = 0;
-        // text.value = null;
-        // wpm.value = 0;
       },
       btnfocus(ev) {
         // replay.value.focus()
@@ -329,6 +333,7 @@ export default {
       this.$refs.typinginput.focus();
     },
     restart(e) {
+      return;
       this.shuffle(this.words);
       if (e) e.preventDefault();
       // this.$refs.typinginput.blur();
@@ -351,6 +356,7 @@ export default {
       this.wpm = 0;
     },
     manager() {
+      console.log(this.playerid)
       this.mymanager = setInterval(() => {
         if (this.time == 15) {
           this.stopper();
@@ -359,14 +365,19 @@ export default {
           this.wpm = parseInt((this.characters * 60) / (4 * this.time));
           if (this.newinput) {
             try {
+              var player;
+              if(this.playerid){
+                 player = 'player_1'
+              }else{
+                 player = 'player_2'
+              }
               fetch(
-                "https://tilte-do-list-default-rtdb.asia-southeast1.firebasedatabase.app/grouse.json",
+                "https://tilte-do-list-default-rtdb.asia-southeast1.firebasedatabase.app/"+player+".json",
                 {
-                  method: "PUT",
+                  method: "PATCH",
                   mode: "cors",
                   cache: "no-cache",
                   body: JSON.stringify({
-                    name: "grouse",
                     wpm: this.wpm,
                   }),
                 }
@@ -411,13 +422,12 @@ export default {
 
         try {
           fetch(
-            "https://tilte-do-list-default-rtdb.asia-southeast1.firebasedatabase.app/grouse.json",
+            "https://tilte-do-list-default-rtdb.asia-southeast1.firebasedatabase.app/player_1.json",
             {
               method: "PUT",
               mode: "cors",
               cache: "no-cache",
               body: JSON.stringify({
-                name: "grouse",
                 wpm: this.wpm,
               }),
             }

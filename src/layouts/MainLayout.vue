@@ -1,26 +1,373 @@
 <template>
-  <q-layout view="hHh lpR fFf"  style="height:100vh">
-
-    <q-header reveal  class="bg-primary text-white">
+  <q-layout view="hHh lpR fFf" style="height: 100vh">
+    <q-header reveal class="bg-primary text-white">
       <q-toolbar>
-        <q-avatar size="100px" style="border-radius: 50%;  border-color:aqua; border:1px solid ">
-            <q-img
-              src="../assets/invo.png"
-              spinner-color="primary"
-              spinner-size="82px"
-            />
-          </q-avatar>
-        <q-toolbar-title>
-
-          <span class="q-mt-xl" style="font-size: 30px" >
-          TILTE TYPING</span>
+        <q-avatar
+          size="100px"
+          style="border-radius: 50%; border-color: aqua; border: 1px solid"
+        >
+          <q-img
+            src="../assets/invo.png"
+            spinner-color="primary"
+            spinner-size="82px"
+          />
+        </q-avatar>
+        <q-toolbar-title class="">
+          <span class="q-mt-xl" style="font-size: 30px"> TILTE TYPING</span>
         </q-toolbar-title>
+
+        <span
+          v-if="timer != 15"
+          class="col-5"
+          style="font-size: 40px; font-weight: 500"
+          >{{ timer }}</span
+        >
+        <q-btn
+          dense
+          unelevated
+          outline
+          color="gold"
+          :label="hostlabel"
+          @click="host"
+        />
+        <q-separator class="q-my-lg" spaced vertical dark />
+        <q-btn
+          :loading="joinloadingflag"
+          push
+          class="q-mr-lg"
+          color="red"
+          label="JOIN"
+          @click="join"
+        />
       </q-toolbar>
     </q-header>
 
-    <q-page-container style="height:100%; white-space: nowrap; overflow: hidden">
-      <router-view style="height:100%" />
+    <q-page-container
+      style="height: 100%; white-space: nowrap; overflow: hidden"
+    >
+      <router-view :playerid="p1" :username="username" />
+      <q-dialog v-model="dialogflag" persistent>
+        <q-card>
+          <q-card-section
+            style="font-size: 24px; font-weight: 500; height: 50px"
+          >
+            {{ ign }}{{ suffix }}
+          </q-card-section>
+          <q-card-section class="q-mt-md">
+            <q-input
+              @focus="$event.target.select()"
+              autofocus
+              outlined
+              dense
+              v-model="ign"
+              type="text"
+            />
+          </q-card-section>
+          <q-card-actions vertical align="center">
+            <q-btn v-close-popup flat label="done" />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
+      <q-dialog v-model="readysetdialog" persistent>
+        <q-card
+          class="flex flex-center"
+          style="
+            font-size: 30px;
+            font-weight: 500;
+            width: 60vw;
+            min-height: 20%;
+          "
+        >
+          <q-card-section> Starting in.. </q-card-section>
+          <q-card-section class="text-center full-width">
+            {{ startingin }}
+          </q-card-section>
+        </q-card>
+      </q-dialog>
+      <q-dialog v-model="resultdialog" persistent>
+        <q-card style="width: 50vw; height: 40%">
+          <q-card-section>
+            {{ result }}
+          </q-card-section>
+          <q-card-section> your score: {{ myscore }} </q-card-section>
+          <q-card-section> opponent score: {{ oppscore }} </q-card-section>
+          <q-card-actions vertical align="center">
+            <q-btn v-close-popup flat label="close" />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
     </q-page-container>
-
   </q-layout>
 </template>
+
+<script>
+import { ref } from "@vue/reactivity";
+import { useQuasar } from "quasar";
+
+let randno = Math.random();
+// console.log(parseInt(randno * 100));
+randno = parseInt(randno * 10000);
+
+const suffix = "_0" + randno;
+const startingin = ref(3);
+const readysetdialog = ref(false);
+const timer = ref(15);
+const hostlabel = ref("create");
+const joinloadingflag = ref(false);
+const p1 = ref(true);
+const dialogflag = ref(true);
+const ign = ref("Player");
+const username = ref(ign.value + suffix);
+const resultdialog = ref(false);
+const myscore = ref(null);
+const oppscore = ref(null);
+const result = ref(null);
+var hostdata = {
+  hosted: false,
+  joined: false,
+  started: false,
+};
+var searchinterval,
+  counter = 0;
+export default {
+  setup() {
+    return {
+      dialogflag,
+      ign,
+      username,
+      startingin,
+      readysetdialog,
+      p1,
+      resultdialog,
+      timer,
+      suffix,
+      hostlabel,
+      joinloadingflag,
+      host,
+      join,
+      myscore,
+      oppscore,
+      result,
+    };
+  },
+};
+
+async function host() {
+  updateinfo();
+  return;
+  hostdata = await gethost();
+  if (hostdata.hosted) {
+    //game is hosted.. start button was pressed
+    if (hostdata.joined) {
+      //player has joined the host, start initialized
+    } else {
+      //player not joined cannot start
+    }
+  } else if (hostdata.started) {
+    //game is started
+  }
+}
+async function join() {
+  username.value = "test";
+  // $q.notify('searching')
+  hostdata = await gethost();
+  console.log(hostdata);
+  if (hostdata.started) {
+    //cant game was started
+    setTimeout(() => {
+      resetfn();
+    }, 15000);
+    alert("match is going on, please wait for your turn");
+    return;
+  }
+  if (hostdata.hosted) {
+    //found a hosted game, you joined the hosted game
+    updateinfo("player_2");
+    p1.value = false;
+    hostdata.joined = true;
+    searchfunction("hosted");
+    updatehost(hostdata);
+  } else {
+    //game was not hosted, you hosted a game
+    hostdata.hosted = true;
+    updateinfo();
+    updatehost(hostdata);
+    searchfunction();
+  }
+}
+
+function searchfunction(param) {
+  var intrvl = 1000;
+  if (param == "hosted") intrvl = 20;
+  joinloadingflag.value = true;
+  searchinterval = setInterval(async () => {
+    counter++;
+    if (counter == 5) {
+      alert("unable to find match, maybe next time");
+      console.log("end");
+      clearInterval(searchinterval);
+      joinloadingflag.value = false;
+      counter = 0;
+      hostdata.hosted = false;
+      hostdata.joined = false;
+      hostdata.started = false;
+      updatehost(hostdata);
+      // $q.notify('unable to find match')
+    } else {
+      const hostdata = await gethost();
+      if (hostdata.hosted && hostdata.joined) {
+        clearInterval(searchinterval);
+        // console.log("both ");
+        joinloadingflag.value = false;
+        hostdata.hosted = true;
+        hostdata.started = true;
+        hostdata.joined = true;
+        updatehost(hostdata);
+
+        readysetdialog.value = true;
+        var readyset = setInterval(() => {
+          // console.log(startingin.value);
+          startingin.value--;
+          if (startingin.value < 0) {
+            clearInterval(readyset);
+            readysetdialog.value = false;
+            startingin.value = 3;
+            countdown();
+          }
+        }, 1000);
+
+        //reset everythign after 15 secs
+        setTimeout(() => {
+          resetfn();
+        }, 15000);
+      }
+    }
+    // console.log(counter);
+  }, 900);
+}
+
+function startfunction() {}
+
+async function updatehost(hostdata) {
+  fetch(
+    "https://tilte-do-list-default-rtdb.asia-southeast1.firebasedatabase.app/host.json",
+    {
+      method: "PUT",
+      mode: "cors",
+      cache: "no-cache",
+      body: JSON.stringify({
+        hosted: hostdata.hosted,
+        started: hostdata.started,
+        joined: hostdata.joined,
+      }),
+    }
+  ).catch((error) => {
+    console.log(error);
+  });
+}
+
+async function gethost() {
+  const hostdata = await fetch(
+    "https://tilte-do-list-default-rtdb.asia-southeast1.firebasedatabase.app/host.json"
+  )
+    .then((Response) => Response.json())
+    .catch((error) => {
+      console.log("gethost catch", error);
+    });
+  // console.log(hostdata);
+  return hostdata;
+}
+async function updateinfo(player) {
+  // if (!name) {
+  //   name = "grouse";
+  // }
+  if (!player) {
+    player = "player_1";
+  }
+  const username = ign.value + suffix;
+  // console.log(username);
+  // return;
+  fetch(
+    "https://tilte-do-list-default-rtdb.asia-southeast1.firebasedatabase.app/" +
+      player +
+      ".json",
+    {
+      method: "PUT",
+      mode: "cors",
+      cache: "no-cache",
+      body: JSON.stringify({
+        name: username,
+        wpm: null,
+      }),
+    }
+  ).catch((error) => {
+    console.log(error);
+  });
+}
+
+function countdown() {
+  var intervariable = setInterval(() => {
+    timer.value--;
+    // console.log(timer.value);
+    if (timer.value < 0) {
+      // console.log("less than zero");
+      timer.value = 15;
+      clearInterval(intervariable);
+      setTimeout(async () => {
+        await getresult();
+        resultdialog.value = true;
+      }, 500);
+
+      // console.log("end of less than zero");
+    }
+  }, 1000);
+}
+
+function resetfn() {
+  // console.log("reset");
+  const resetdata = {
+    hosted: false,
+    joined: false,
+    started: false,
+  };
+  updatehost(resetdata);
+}
+
+async function getresult() {
+  // console.log("resultdialog");
+  // const xxx  = await fetch(
+  //   "https://tilte-do-list-default-rtdb.asia-southeast1.firebasedatabase.app/player_1.json"
+  // )
+  //   .then((Response) => {
+  //     Response.json();
+  //   })
+  //   .catch((error) => {
+  //     console.log("error");
+  //   });
+
+  const player1 = await fetch(
+    "https://tilte-do-list-default-rtdb.asia-southeast1.firebasedatabase.app/player_1.json"
+  )
+    .then((Response) => Response.json())
+    .catch((error) => {
+      console.log("gethost catch", error);
+    });
+
+  const player2 = await fetch(
+    "https://tilte-do-list-default-rtdb.asia-southeast1.firebasedatabase.app/player_2.json"
+  )
+    .then((Response) => Response.json())
+    .catch((error) => {
+      console.log("gethost catch", error);
+    });
+
+  // console.log(player1);
+  if (p1.value) {
+    myscore.value = player1.wpm;
+    oppscore.value = player2.wpm;
+  } else {
+    myscore.value = player2.wpm;
+    oppscore.value = player1.wpm;
+  }
+}
+</script>
