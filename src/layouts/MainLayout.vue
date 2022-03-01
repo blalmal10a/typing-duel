@@ -93,8 +93,11 @@
           <!-- <q-card-section> {{yourname}}: <span v-if="myscore">{{ myscore }}</span> <span  v-else> Calculating..</span>  (you)</q-card-section>
           <q-card-section> {{oppname}}: <span v-if="oppscore">{{ oppscore }} </span> <span v-else> Calculating..</span> </q-card-section> -->
 
-          <q-card-section  > <div v-if="yourname">{{ yourname }}: {{ myscore }} WPM (YOU)</div> <div v-else>Calculating..</div></q-card-section>
-          <q-card-section style="q-mt-sm" >
+          <q-card-section>
+            <div v-if="yourname">{{ yourname }}: {{ myscore }} WPM (YOU)</div>
+            <div v-else>Calculating..</div></q-card-section
+          >
+          <q-card-section style="q-mt-sm">
             <div v-if="oppscore">{{ oppname }}: {{ oppscore }}wpm</div>
           </q-card-section>
           <q-card-actions vertical align="center">
@@ -170,8 +173,7 @@ export default {
       pushmultiplayer() {
         $router.push("/multiplayer");
         setTimeout(() => {
-
-        location.reload()
+          location.reload();
         }, 500);
       },
     };
