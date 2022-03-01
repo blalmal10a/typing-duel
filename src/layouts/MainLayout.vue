@@ -170,8 +170,9 @@ export default {
       pushmultiplayer() {
         $router.push("/multiplayer");
         setTimeout(() => {
-          $router.go();
-        }, 300);
+
+        location.reload()
+        }, 500);
       },
     };
   },

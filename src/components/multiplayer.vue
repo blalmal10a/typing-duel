@@ -275,7 +275,8 @@ export default {
       console.log(propstest.value);
     });
 
-    onMounted(() => {});
+    onMounted(() => {
+    });
 
     return {
       printer,
