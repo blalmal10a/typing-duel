@@ -1,7 +1,7 @@
 <template>
   <q-layout view="hHh lpR fFf" style="height: 100vh">
     <q-header reveal class="bg-primary text-white">
-      <q-toolbar>
+      <q-toolbar  >
         <q-avatar
           size="100px"
           style="border-radius: 50%; border-color: aqua; border: 1px solid"
@@ -12,7 +12,7 @@
             spinner-size="82px"
           />
         </q-avatar>
-        <q-toolbar-title class="">
+        <q-toolbar-title style="border: double re" class="col-4">
           <span class="q-mt-xl" style="font-size: 30px"> TILTE TYPING</span>
         </q-toolbar-title>
 
@@ -22,6 +22,7 @@
           style="font-size: 40px; font-weight: 500"
           >{{ timer }}</span
         >
+        <q-space />
         <q-btn
           dense
           unelevated
@@ -196,7 +197,9 @@ async function host() {
   }
 }
 async function join() {
-  username.value = "test";
+
+  if(hostdata.started) return;
+
   // $q.notify('searching')
   hostdata = await gethost();
   // console.log(hostdata);
