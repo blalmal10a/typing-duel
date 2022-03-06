@@ -1,7 +1,7 @@
 <template>
   <q-layout view="hHh lpR fFf" style="height: 100vh">
     <q-header reveal class="bg-primary text-white">
-      <q-toolbar  >
+      <q-toolbar>
         <q-avatar
           size="100px"
           style="border-radius: 50%; border-color: aqua; border: 1px solid"
@@ -16,22 +16,17 @@
           <span class="q-mt-xl" style="font-size: 30px"> TILTE TYPING</span>
         </q-toolbar-title>
 
-        <span
-          v-if="timer != 15"
-          class="col-5"
-          style="font-size: 40px; font-weight: 500"
-          >{{ timer }}</span
-        >
         <q-space />
         <q-btn
+          v-if="!$route.meta.multiplayer"
           dense
           unelevated
           outline
           color="gold"
           :label="hostlabel"
-          @click="pushmultiplayer"
+          to="/multiplayer"
         />
-        <q-separator class="q-my-lg" spaced vertical dark />
+        <!-- <q-separator class="q-my-lg" spaced vertical dark />
         <q-btn
           v-if="$route.meta.multiplayer"
           :loading="joinloadingflag"
@@ -40,14 +35,14 @@
           color="red"
           label="JOIN"
           @click="join"
-        />
+        /> -->
       </q-toolbar>
     </q-header>
 
     <q-page-container
       style="height: 100%; white-space: nowrap; overflow: hidden"
     >
-      <router-view :playerid="p1" :username="username" />
+      <router-view ref="pageref" :playerid="p1" :username="username" />
       <q-dialog v-model="dialogflag" persistent>
         <q-card>
           <q-card-section
@@ -148,11 +143,13 @@ var searchinterval,
 // console.log($route.meta.multiplayer)
 export default {
   setup() {
+    const pageref = ref(null);
     const route = useRoute();
     const $router = useRouter();
 
-    if (route.meta.multiplayer) dialogflag.value = true;
+    // if (route.meta.multiplayer) dialogflag.value = true;
     return {
+      pageref,
       dialogflag,
       ign,
       username,
@@ -197,8 +194,7 @@ async function host() {
   }
 }
 async function join() {
-
-  if(hostdata.started) return;
+  if (hostdata.started) return;
 
   // $q.notify('searching')
   hostdata = await gethost();
@@ -348,7 +344,6 @@ function countdown() {
       setTimeout(async () => {
         await getresult();
       }, 1200);
-
       // console.log("end of less than zero");
     }
   }, 1000);
