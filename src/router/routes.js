@@ -8,6 +8,7 @@ const routes = [
       { path: "/another", component: () => import("components/anohter.vue"), meta: { forbidden: false, requiresAuth: true } },
       { path: "/multiplayer", component: () => import("components/multiplayer.vue"), meta: { multiplayer: true, forbidden: false, requiresAuth: true } },
       { path: "/home", component: () => import("pages/Home.vue"), meta: { requiresAuth: true } },
+      { path: "/test", component: () => import("pages/test.vue"), meta: { test: true } },
     ],
   },
 

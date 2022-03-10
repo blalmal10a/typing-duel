@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHh lpR fFf" style="height: 100vh">
-    <q-header reveal class="bg-primary text-white">
+    <q-header v-if="!$route.meta.test" reveal class="bg-primary text-white">
       <q-toolbar>
         <q-avatar
           size="100px"
