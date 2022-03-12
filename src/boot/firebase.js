@@ -16,6 +16,28 @@ const firebaseConfig = {
   persistence: "browserLocalPersistence",
   credential: serviceAccount
 };
+const app = initializeApp(firebaseConfig);
+
+// const firebaseConfig = {
+//   apiKey: "AIzaSyCyPwykQ1zqhtCCn0bN0xiXjx94znYq0u8",
+//   authDomain: "tilte-do-list.firebaseapp.com",
+//   databaseURL: "https://tilte-do-list-default-rtdb.asia-southeast1.firebasedatabase.app",
+//   projectId: "tilte-do-list",
+//   storageBucket: "tilte-do-list.appspot.com",
+//   messagingSenderId: "875408807380",
+//   appId: "1:875408807380:web:b313d9621417826473b241"
+// };
+
+// // Initialize Firebase
+// const app = initializeApp(firebaseConfig);
+
+
+export default firebaseConfig
+
+export { app }
+
+
+
 
 
 // initializeApp.getCurrentUser = () => {
@@ -26,10 +48,3 @@ const firebaseConfig = {
 //     }, reject);
 //   })
 // };
-
-
-
-const app = initializeApp(firebaseConfig);
-export default firebaseConfig
-
-export { app }

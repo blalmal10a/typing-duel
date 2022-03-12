@@ -1,23 +1,66 @@
 <template>
-  <q-page padding>
-asdfasdf
-  </q-page>
+  <q-page padding> asdfasdf </q-page>
 </template>
 
 <script>
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc,collection, addDoc, getFirestore } from "firebase/firestore";
+
+
+// initializeApp()
+
+const db = getFirestore();
+
+// console.log(db)
 
 // Add a new document in collection "cities"
-// await setDoc(doc(db, "cities", "LA"), {
-//   name: "Los Angeles",
-//   state: "CA",
-//   country: "USA"
-// });
+
+firefunction();
+
 export default {
   setup() {
-    return {
-
-    }
+    return {};
   },
+};
+
+async function firefunction() {
+
+
+// import { collection, addDoc } from "firebase/firestore";
+
+// Add a new document with a generated id.
+const docRef = await addDoc(collection(db, "cities"), {
+  name: "Tokyo",
+  country: "Japan"
+});
+console.log("Document written with ID: ", docRef.id);
+
+
+
+  // await setDoc(doc(db, "cities", "LA"), {
+  //   name: "Los Angeles",
+  //   state: "CA",
+  //   country: "USA",
+  // });
+  // await setDoc(doc());
+
+  //another version 8
+  // db.collection("cities")
+  //   .doc("LA")
+  //   .set({
+  //     name: "Los Angeles",
+  //     state: "CA",
+  //     country: "USA",
+  //   })
+  //   .then(() => {
+  //     console.log("Document successfully written!");
+  //   })
+  //   .catch((error) => {
+  //     console.error("Error writing document: ", error);
+  //   });
+
+  //nodejs version
+
+
+// const res = await db.collection('cities').doc('LA').set(data);
 }
 </script>

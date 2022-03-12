@@ -80,8 +80,6 @@ export default {
       }
     },
     google () {
-      console.log('hehe')
-      console.log(auth)
       this.$q.notify('not available yet :(')
     },
 
