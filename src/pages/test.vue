@@ -17,7 +17,7 @@ const asdf = require("firebase/functions");
 // console.log(asdf);
 // initializeApp()
 
-listenchange()
+// listenchange()
 
 const db = getFirestore();
 
