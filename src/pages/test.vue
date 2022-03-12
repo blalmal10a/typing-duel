@@ -1,5 +1,5 @@
 <template>
-  <q-page padding> asdfasdf </q-page>
+  <q-page padding> <q-btn color="primary" icon="check" label="OK" @click="firefunction" /> </q-page>
 </template>
 
 <script>
@@ -29,7 +29,9 @@ const db = getFirestore();
 
 export default {
   setup() {
-    return {};
+    return {
+      firefunction
+    };
   },
 };
 
