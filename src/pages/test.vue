@@ -3,10 +3,21 @@
 </template>
 
 <script>
-import { doc, setDoc,collection, addDoc, getFirestore } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  collection,
+  addDoc,
+  getFirestore,
+} from "firebase/firestore";
 
+const asdf = require("firebase/functions");
+// const admin = require('firebase/firead')
 
+// console.log(asdf);
 // initializeApp()
+
+listenchange()
 
 const db = getFirestore();
 
@@ -14,7 +25,7 @@ const db = getFirestore();
 
 // Add a new document in collection "cities"
 
-firefunction();
+// firefunction();
 
 export default {
   setup() {
@@ -23,18 +34,14 @@ export default {
 };
 
 async function firefunction() {
+  // import { collection, addDoc } from "firebase/firestore";
 
-
-// import { collection, addDoc } from "firebase/firestore";
-
-// Add a new document with a generated id.
-const docRef = await addDoc(collection(db, "cities"), {
-  name: "Tokyo",
-  country: "Japan"
-});
-console.log("Document written with ID: ", docRef.id);
-
-
+  // Add a new document with a generated id.
+  const docRef = await addDoc(collection(db, "cities"), {
+    name: "Tokyoyo",
+    country: "Japaan",
+  });
+  console.log("Document written with ID: ", docRef.id);
 
   // await setDoc(doc(db, "cities", "LA"), {
   //   name: "Los Angeles",
@@ -60,7 +67,16 @@ console.log("Document written with ID: ", docRef.id);
 
   //nodejs version
 
+  // const res = await db.collection('cities').doc('LA').set(data);
+}
 
-// const res = await db.collection('cities').doc('LA').set(data);
+function listenchange() {
+  console.log(asdf)
+  // exports.myFunctionName = functions.firestore
+  //   .document("cities")
+  //   .onWrite((change, context) => {
+  //     console.log("there is change");
+  //     console.log("change", change, "context", context);
+  //   });
 }
 </script>
