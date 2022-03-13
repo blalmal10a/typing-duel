@@ -48,7 +48,7 @@ module.exports = configure(function (ctx) {
         API_URL: ctx.dev
           // ? 'http://127.0.0.1:8000/api'
           // ? 'http://localhost:8000/api'
-          ? 'http://192.168.0.178:8000/api'
+          ? 'https://tilte-do-list-default-rtdb.asia-southeast1.firebasedatabase.app/'
           : '/api',
 
         SERVER_URL: ctx.dev

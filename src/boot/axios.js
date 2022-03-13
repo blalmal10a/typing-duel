@@ -9,9 +9,9 @@ import axios from "axios";
 // for each client)
 
 const api = axios.create({
-  // headers: { 'X-Requested-With': 'XMLHttpRequest' },
+  headers: { 'X-Requested-With': 'XMLHttpRequest' },
   baseURL: process.env.API_URL,
-  withCredentials: true
+  // withCredentials: true
 })
 const sapi = axios.create({
   headers: { 'X-Requested-With': 'XMLHttpRequest' },
