@@ -52,7 +52,10 @@
       </q-toolbar>
     </q-header>
 
-    <q-page-container style="height: 100%; white-space: nowrap; overflow: hidden">
+    <q-page-container
+      class="bg-grey-10"
+      style="height: 100%; white-space: nowrap; overflow: hidden"
+    >
       <router-view
         ref="pageref"
         :playerid="p1"
