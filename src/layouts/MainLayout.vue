@@ -26,7 +26,7 @@
           <span
             class="q-mt-xl"
             style="font-size: 30px"
-          > TILTE TYPING</span>
+          >TYPING DUEL</span>
         </q-toolbar-title>
 
         <q-space />
