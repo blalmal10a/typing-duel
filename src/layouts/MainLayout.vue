@@ -141,6 +141,17 @@
         </q-card>
       </q-dialog>
     </q-page-container>
+    <div class="q-pa-md absolute-bottom-right text-white">
+      <a
+        href="https://github.com/blalmal10a/typing-duel"
+        target="_blank"
+      > <img
+          width="32"
+          src="~assets/github-mark-white.png"
+          alt=""
+          srcset=""
+        ></a>
+    </div>
   </q-layout>
 </template>
 
