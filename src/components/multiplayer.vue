@@ -143,7 +143,7 @@
           style="font-size: 35px"
           class="flex flex-center full-width"
         >
-          TILTE TYPING: TYPE DUEL
+          Are you ready to duel?
         </q-card-section>
         <q-card-section class="q-mt-md flex flex-center full-width">
           <q-input
@@ -153,7 +153,7 @@
             input-style=" font-size: 25px; cursor:default; user-select: none"
             borderless
             @blur="focusfn"
-            placeholder="enter name"
+            placeholder="Enter your name"
             ref="typinginput"
             autofocus
             color="white"
