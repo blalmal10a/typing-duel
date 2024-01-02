@@ -33,14 +33,17 @@
     </div>
     <div
       class="full-width text-center"
-      :style="
-        $q.platform.has.touch
+      :style="$q.platform.has.touch
           ? ' margin-top: 20px; white-space:nowrap'
           : ' margin-top: 50px;  font-size: 20px; white-space: nowrap'
-      "
+        "
     >
       <!-- <h6>{{ words[ind]+ " "+ words[ind+1] }}</h6> -->
-      <span v-if="!opendialog" class="row" style="white-space: nowrap">
+      <span
+        v-if="!opendialog"
+        class="row"
+        style="white-space: nowrap"
+      >
         <!-- <span  v-for="word, index in words" :key="index" >
           <span v-if="index>=ind">{{word}}</span>
            </span> -->
@@ -56,31 +59,35 @@
 
           <span
             class="wordDisplay"
-            :style="
-              entered[ind - 2] == words[ind - 2]
+            :style="entered[ind - 2] == words[ind - 2]
                 ? 'color:lightgreen '
                 : 'color: red'
-            "
+              "
             v-if="words[ind - 2]"
           >
             {{ words[ind - 2] + " " }}
           </span>
           <span
             class="wordDisplay"
-            :style="
-              entered[ind - 1] == words[ind - 1]
+            :style="entered[ind - 1] == words[ind - 1]
                 ? 'color: lightgreen'
                 : 'color: red'
-            "
+              "
             v-if="words[ind - 1]"
           >
             {{ words[ind - 1] + " " }}
           </span>
         </span>
         <!-- <span style="" class="wordDisplay col-shrink q-pr-sm"> -->
-      <span style="font-size: 24px; font-weight: 1000;  padding-left: 30px; padding-right:30px; padding-top: 20px; padding-bottom: 20px; background: rgba(255,253,208, 0.2) ;border: 2px double rgba(255,253,208, 0.1); border-radius: 30%" class="wordDisplay col-shrink q-pr-sm">
+        <span
+          style="font-size: 24px; font-weight: 1000;  padding-left: 30px; padding-right:30px; padding-top: 20px; padding-bottom: 20px; background: rgba(255,253,208, 0.2) ;border: 2px double rgba(255,253,208, 0.1); border-radius: 30%"
+          class="wordDisplay col-shrink q-pr-sm"
+        >
 
-          <span v-if="words[ind]" style=" ;">
+          <span
+            v-if="words[ind]"
+            style=" ;"
+          >
             {{ words[ind] + " " }}
           </span>
         </span>
@@ -89,8 +96,14 @@
           style="white-space: nowrap"
         > -->
 
-      <span style="font-size: 24px; font-weight: 1000;  padding-left: 30px; padding-right:30px; padding-top: 20px; padding-bottom: 20px; " class="wordDisplay col-shrink q-pr-sm">
-          <span v-for="n in ind + 1" :key="n">
+        <span
+          style="font-size: 24px; font-weight: 1000;  padding-left: 30px; padding-right:30px; padding-top: 20px; padding-bottom: 20px; "
+          class="wordDisplay col-shrink q-pr-sm"
+        >
+          <span
+            v-for="n in ind + 1"
+            :key="n"
+          >
             <span
               v-if="n > ind && words[n]"
               :style="n == ind + 1 ? ' ; font-weight:200' : 'font-weight:200'"
@@ -100,8 +113,11 @@
           </span>
         </span>
       </span>
-      <span v-else class="text-white">
-        <h5>{{ wpm }} {{ opendialog }}</h5>
+      <span
+        v-else
+        class="text-white"
+      >
+        <h5>{{ wpm }} WPM</h5>
       </span>
       <div class="col-12 q-mt-md">
         <div class="flex flex-center">
@@ -180,9 +196,9 @@ import { useQuasar } from "quasar";
 import { useRouter } from "vue-router";
 import { onMounted } from "vue";
 // const functions = require('firebase-functions')
-import {getFunctions, httpsCallable} from 'firebase/functions'
+import { getFunctions, httpsCallable } from 'firebase/functions'
 
-function mySetTimefn(){
+function mySetTimefn() {
   const date = new Date()
   const startTime = date.getTime() + 5000
   // fetch()
@@ -191,23 +207,23 @@ function mySetTimefn(){
 
 var retrievedTime
 
-console.log(parseInt(Math.random()*900) +1000)
+console.log(parseInt(Math.random() * 900) + 1000)
 
-function myCalltimefn(){
+function myCalltimefn() {
   // fetch()
 
-  const delayTime= parseInt(Math.random()*900) + 100 //pawimawh lo
+  const delayTime = parseInt(Math.random() * 900) + 100 //pawimawh lo
   const date = new Date()
 
-  retrievedTime =  date.getTime() + 7000 - delayTime //fetch function lem2
+  retrievedTime = date.getTime() + 7000 - delayTime //fetch function lem2
 
 }
 
-function starterFunction (){
-  while(1){
+function starterFunction() {
+  while (1) {
     const checkDate = new Date()
     const sec = checkDate.getTime()
-    if(sec >= retrievedTime){
+    if (sec >= retrievedTime) {
       break;
     }
   }
@@ -524,16 +540,14 @@ export default {
 // }
 </script>
 
-<style>
-.wordDisplay {
+<style>.wordDisplay {
   color: antiquewhite;
   /* color: ; */
 }
 
 ::selection {
   color: rgba(255, 255, 255, 1);
-}
-</style>
+}</style>
 
 <style lang="sass">
 

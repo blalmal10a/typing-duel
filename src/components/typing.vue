@@ -26,14 +26,17 @@
     </div> -->
     <div
       class="full-width text-center"
-      :style="
-        $q.platform.has.touch
+      :style="$q.platform.has.touch
           ? ' margin-top: 20px; white-space:nowrap'
           : ' margin-top: 50px;  font-size: 20px; white-space: nowrap'
-      "
+        "
     >
       <!-- <h6>{{ words[ind]+ " "+ words[ind+1] }}</h6> -->
-      <span v-if="!opendialog" class="row" style="white-space: nowrap">
+      <span
+        v-if="!opendialog"
+        class="row"
+        style="white-space: nowrap"
+      >
         <!-- <span  v-for="word, index in words" :key="index" >
           <span v-if="index>=ind">{{word}}</span>
            </span> -->
@@ -49,29 +52,33 @@
 
           <span
             class="wordDisplay"
-            :style="
-              entered[ind - 2] == words[ind - 2]
+            :style="entered[ind - 2] == words[ind - 2]
                 ? 'color:lightgreen '
                 : 'color: red'
-            "
+              "
             v-if="words[ind - 2]"
           >
             {{ words[ind - 2] + " " }}
           </span>
           <span
             class="wordDisplay"
-            :style="
-              entered[ind - 1] == words[ind - 1]
+            :style="entered[ind - 1] == words[ind - 1]
                 ? 'color: lightgreen'
                 : 'color: red'
-            "
+              "
             v-if="words[ind - 1]"
           >
             {{ words[ind - 1] + " " }}
           </span>
         </span>
-        <span style="" class="wordDisplay col-shrink q-pr-sm">
-          <span v-if="words[ind]" style=" ;">
+        <span
+          style=""
+          class="wordDisplay col-shrink q-pr-sm"
+        >
+          <span
+            v-if="words[ind]"
+            style=" ;"
+          >
             {{ words[ind] + " " }}
           </span>
         </span>
@@ -79,7 +86,10 @@
           class="wordDisplay col-xs-1 col-md-2 text-left"
           style="white-space: nowrap"
         >
-          <span v-for="n in ind + 5" :key="n">
+          <span
+            v-for="n in ind + 5"
+            :key="n"
+          >
             <span
               v-if="n > ind && words[n]"
               :style="n == ind + 1 ? ' ; font-weight:200' : 'font-weight:200'"
@@ -89,8 +99,11 @@
           </span>
         </span>
       </span>
-      <span v-else class="text-white">
-        <h5>{{ wpm }} {{ opendialog }}</h5>
+      <span
+        v-else
+        class="text-white"
+      >
+        <h5>{{ wpm }} WPM</h5>
       </span>
       <div class="col-12 q-mt-md">
         <div class="flex flex-center">
@@ -460,16 +473,14 @@ export default {
 // }
 </script>
 
-<style scoped>
-.wordDisplay {
+<style scoped>.wordDisplay {
   color: antiquewhite;
   /* color: ; */
 }
 
 ::selection {
   color: rgba(255, 255, 255, 1);
-}
-</style>
+}</style>
 
 <style lang="sass" scoped >
 
