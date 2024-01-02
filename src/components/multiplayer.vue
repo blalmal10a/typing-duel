@@ -3,7 +3,10 @@
     class="text-center container bg-grey-10 q-pt-xl"
     style="max-height: 100vh; white-space: nowrap; overflow: hidden"
   >
-    <div class="row" v-if="!showResult">
+    <div
+      class="row"
+      v-if="!showResult"
+    >
       <div class="col-xs-10 offset-xs-1 col-sm-4 offset-sm-4">
         <q-toolbar class="text-white">
           <div>
@@ -30,29 +33,33 @@
       >
         <span
           class="wordDisplay"
-          :style="
-            entered[ind - 2] == words[ind - 2]
-              ? 'color:lightgreen '
-              : 'color: red'
-          "
+          :style="entered[ind - 2] == words[ind - 2]
+            ? 'color:lightgreen '
+            : 'color: red'
+            "
           v-if="words[ind - 2]"
         >
           {{ words[ind - 2] + " " }}
         </span>
         <span
           class="wordDisplay"
-          :style="
-            entered[ind - 1] == words[ind - 1]
-              ? 'color: lightgreen'
-              : 'color: red'
-          "
+          :style="entered[ind - 1] == words[ind - 1]
+            ? 'color: lightgreen'
+            : 'color: red'
+            "
           v-if="words[ind - 1]"
         >
           {{ words[ind - 1] + " " }}
         </span>
       </span>
-      <span style="" class="wordDisplay col-shrink q-pr-sm">
-        <span v-if="words[ind]" style=" ;">
+      <span
+        style=""
+        class="wordDisplay col-shrink q-pr-sm"
+      >
+        <span
+          v-if="words[ind]"
+          style=" ;"
+        >
           {{ words[ind] + " " }}
         </span>
       </span>
@@ -60,7 +67,10 @@
         class="wordDisplay col-xs-1 col-md-2 text-left"
         style="white-space: nowrap"
       >
-        <span v-for="n in ind + 5" :key="n">
+        <span
+          v-for="n in ind + 5"
+          :key="n"
+        >
           <span
             v-if="n > ind && words[n]"
             :style="n == ind + 1 ? ' ; font-weight:200' : 'font-weight:200'"
@@ -71,7 +81,11 @@
       </span>
     </span>
 
-    <span v-else class="text-white" style="font-size: 30px">
+    <span
+      v-else
+      class="text-white"
+      style="font-size: 30px"
+    >
       <span v-if="resultReady">
         <div>{{ username }}: {{ wpm }} WPM (you)</div>
         <div>{{ another }}: {{ awpm }} WPM</div>
@@ -114,28 +128,36 @@
       @click="close_result"
     />
 
-    <q-dialog full-width v-model="menu" position="top" persistent>
+    <q-dialog
+      full-width
+      v-model="menu"
+      position="top"
+      persistent
+    >
       <q-card
         v-if="!readysetdialog"
         style="margin-left: 20%; margin-right: 20%;  margin-top: 150px; border-radius: 10px; border: double grey"
         class="bg-grey-10 text-white q-py-xl"
       >
-      <q-card-section style="font-size: 35px" class="flex flex-center full-width">
-        TILTE TYPING: TYPE DUEL
-      </q-card-section>
+        <q-card-section
+          style="font-size: 35px"
+          class="flex flex-center full-width"
+        >
+          TILTE TYPING: TYPE DUEL
+        </q-card-section>
         <q-card-section class="q-mt-md flex flex-center full-width">
           <q-input
             dark
             outlined
             input-class="q-pa-md"
-            input-style=" font-size: 25px;caret-color: transparent; cursor:default; user-select: none"
+            input-style=" font-size: 25px; cursor:default; user-select: none"
             borderless
             @blur="focusfn"
             placeholder="enter name"
             ref="typinginput"
             autofocus
+            color="white"
             style="width: 30vw"
-            dense
             @keyup.enter="join"
             v-model="username"
             pre
@@ -391,8 +413,8 @@ async function updateinfo(player) {
   // return;
   fetch(
     "https://tilte-do-list-default-rtdb.asia-southeast1.firebasedatabase.app/" +
-      player +
-      ".json",
+    player +
+    ".json",
     {
       method: "PUT",
       mode: "cors",
@@ -409,8 +431,8 @@ async function updateinfo(player) {
 async function getopponent(seat) {
   const opponent = await fetch(
     "https://tilte-do-list-default-rtdb.asia-southeast1.firebasedatabase.app/" +
-      seat +
-      ".json"
+    seat +
+    ".json"
   )
     .then((Response) => Response.json())
     .catch((error) => {
