@@ -1,19 +1,32 @@
 <template>
-  <q-layout view="hHh lpR fFf" style="height: 100vh">
-    <q-header v-if="!$route.meta.test" reveal class="bg-primary text-white">
+  <q-layout
+    view="hHh lpR fFf"
+    style="height: 100vh"
+  >
+    <q-header
+      v-if="!$route.meta.test"
+      reveal
+      class="bg-primary text-white"
+    >
       <q-toolbar>
         <q-avatar
           size="100px"
           style="border-radius: 50%; border-color: aqua; border: 1px solid"
         >
           <q-img
-            src="../assets/invo.png"
+            src="../assets/invo.webp"
             spinner-color="primary"
             spinner-size="82px"
           />
         </q-avatar>
-        <q-toolbar-title style="border: double re" class="col-4">
-          <span class="q-mt-xl" style="font-size: 30px"> TILTE TYPING</span>
+        <q-toolbar-title
+          style="border: double re"
+          class="col-4"
+        >
+          <span
+            class="q-mt-xl"
+            style="font-size: 30px"
+          > TILTE TYPING</span>
         </q-toolbar-title>
 
         <q-space />
@@ -39,15 +52,18 @@
       </q-toolbar>
     </q-header>
 
-    <q-page-container
-      style="height: 100%; white-space: nowrap; overflow: hidden"
-    >
-      <router-view ref="pageref" :playerid="p1" :username="username" />
-      <q-dialog v-model="dialogflag" persistent>
+    <q-page-container style="height: 100%; white-space: nowrap; overflow: hidden">
+      <router-view
+        ref="pageref"
+        :playerid="p1"
+        :username="username"
+      />
+      <q-dialog
+        v-model="dialogflag"
+        persistent
+      >
         <q-card>
-          <q-card-section
-            style="font-size: 24px; font-weight: 500; height: 50px"
-          >
+          <q-card-section style="font-size: 24px; font-weight: 500; height: 50px">
             {{ ign }}{{ suffix }}
           </q-card-section>
           <q-card-section class="q-mt-md">
@@ -60,12 +76,22 @@
               type="text"
             />
           </q-card-section>
-          <q-card-actions vertical align="center">
-            <q-btn v-close-popup flat label="done" />
+          <q-card-actions
+            vertical
+            align="center"
+          >
+            <q-btn
+              v-close-popup
+              flat
+              label="done"
+            />
           </q-card-actions>
         </q-card>
       </q-dialog>
-      <q-dialog v-model="readysetdialog" persistent>
+      <q-dialog
+        v-model="readysetdialog"
+        persistent
+      >
         <q-card
           class="flex flex-center"
           style="
@@ -81,7 +107,10 @@
           </q-card-section>
         </q-card>
       </q-dialog>
-      <q-dialog v-model="resultdialog" persistent>
+      <q-dialog
+        v-model="resultdialog"
+        persistent
+      >
         <q-card style="font-size: 30px; font-weight: 700; width: 50vw">
           <q-card-section>
             {{ result }}
@@ -91,13 +120,20 @@
 
           <q-card-section>
             <div v-if="yourname">{{ yourname }}: {{ myscore }} WPM (YOU)</div>
-            <div v-else>Calculating..</div></q-card-section
-          >
+            <div v-else>Calculating..</div>
+          </q-card-section>
           <q-card-section style="q-mt-sm">
             <div v-if="oppscore">{{ oppname }}: {{ oppscore }}wpm</div>
           </q-card-section>
-          <q-card-actions vertical align="center">
-            <q-btn v-close-popup flat label="close" />
+          <q-card-actions
+            vertical
+            align="center"
+          >
+            <q-btn
+              v-close-popup
+              flat
+              label="close"
+            />
           </q-card-actions>
         </q-card>
       </q-dialog>
@@ -273,7 +309,7 @@ function searchfunction(param) {
   }, 900);
 }
 
-function startfunction() {}
+function startfunction() { }
 
 async function updatehost(hostdata) {
   fetch(
@@ -316,8 +352,8 @@ async function updateinfo(player) {
   // return;
   fetch(
     "https://tilte-do-list-default-rtdb.asia-southeast1.firebasedatabase.app/" +
-      player +
-      ".json",
+    player +
+    ".json",
     {
       method: "PUT",
       mode: "cors",
