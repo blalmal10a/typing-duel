@@ -116,7 +116,6 @@
         />
       </div>
     </div>
-
     <q-btn
       v-if="showResult"
       class="q-mt-md"
@@ -400,7 +399,7 @@ function resetfn() {
     started: false,
   };
   updatehost(resetdata);
-  shuffle(words.value);
+  // shuffle(words.value);
 }
 
 async function updateinfo(player) {
@@ -449,6 +448,7 @@ function start() {
   }, 300);
 
   timecounter = setInterval(async () => {
+
     if (!startflag.value) return;
     if (timer.value == 15) {
       showResult.value = true;
@@ -490,13 +490,19 @@ function keyinput(ev) {
 
 function next(e) {
   e.preventDefault();
+
+
   if (!text.value) return;
   ind.value++;
-  total += text.value.length;
-  entered.value.push(text.value);
-  wpm.value = parseInt((total * 60) / (4 * timer.value));
+  if (words.value[ind.value - 1] == text.value) {
+    total += text.value.length;
+  }
 
-  // console.log('wpm: ', wpm.value, '   ')
+  entered.value.push(text.value);
+
+  if (total)
+    wpm.value = parseInt((total / 5) / (timer.value / 60))
+  else wpm.value = 0;
 
   text.value = null;
 }
