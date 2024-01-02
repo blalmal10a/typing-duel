@@ -2,7 +2,7 @@
   "name": "vue3firebase",
   "version": "0.0.1",
   "description": "vue 3 firebase",
-  "productName": "Tilte Type",
+  "productName": "Typing Duel",
   "author": "ys-grouse <malsawma7777@gmail.com>",
   "private": true,
   "scripts": {
